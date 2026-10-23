@@ -50,6 +50,9 @@ uv run agentlens-eval run --dataset evals/datasets/golden_v0.jsonl \
   --config config/agents/baseline.yaml --repeats 1 --limit 3 --budget-usd 2 --label pilot
 # -> eval-runs/pilot/{results.jsonl, results.meta.json, traces/, report.md}
 ```
+**Known limitation:** the seed dataset is all `draft` with empty gold, and the scorer raises on an incomplete expectation
+(`expected must be a complete numeric expectation`). So this command crashes after the first answered numeric case until
+gold is filled in. For a run-only pilot without gold, drive the agent factory directly and read the traces.
 Open a file in `eval-runs/pilot/traces/` to read the actual trace. This is also your **TL-04** live check of the EDGAR tools:
 expect to find and fix parsing problems on real filings — that is normal and is what the fixture tests are for.
 

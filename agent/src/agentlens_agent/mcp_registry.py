@@ -39,7 +39,20 @@ log = logging.getLogger(__name__)
 
 # The MCP SDK starts stdio servers with a minimal environment (HOME, PATH, USER, ...), NOT a copy of ours.
 # Settings the tool servers need must be forwarded explicitly, or e.g. edgar-mcp dies for lack of SEC_USER_AGENT.
-FORWARDED_ENV = ("SEC_USER_AGENT", "EDGAR_CACHE_DIR")
+# Egress settings are forwarded too: behind an HTTP(S) proxy / custom CA, the tool servers cannot reach SEC without them.
+FORWARDED_ENV = (
+    "SEC_USER_AGENT",
+    "EDGAR_CACHE_DIR",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "NO_PROXY",
+    "https_proxy",
+    "http_proxy",
+    "no_proxy",
+    "SSL_CERT_FILE",
+    "SSL_CERT_DIR",
+    "REQUESTS_CA_BUNDLE",
+)
 
 
 def _target(spec: Any) -> Any:

@@ -111,7 +111,7 @@ fails fast** (an agent without tools is broken); `POST /v1/agent/run` returns a 
 ### Tests (`agent/tests`, 37 pass)
 `test_loop.py` (19) is the executable spec: invariants (one `run.finished`, strictly increasing `seq`, unique ids), retries,
 budget, step limit, repair/nudge paths, concurrency (sleeping fake tools), allow-list, truncation. `test_mcp_registry.py` (7)
-spawns a real calc-mcp over stdio and checks that `SEC_USER_AGENT` is forwarded to stdio tool servers (the MCP SDK does *not*
+spawns a real calc-mcp over stdio and checks that `SEC_USER_AGENT` (plus proxy/CA-bundle variables, needed to reach SEC from behind a proxy) is forwarded to stdio tool servers (the MCP SDK does *not*
 inherit your environment — a bug found while preparing the run docs). `test_main.py` (5) drives the real FastAPI route with a scripted LLM.
 
 ## 3. Tools — `tools/src/agentlens_tools/`
