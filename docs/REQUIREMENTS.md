@@ -76,7 +76,7 @@ Releases
 | EV-07 | P0 | Repeats and aggregation: case-level pass = strict majority; also report consistency (all repeats agree) | Matches `compare` conventions; tested — implemented + tested; run with a real key to produce results | Both | ☑ |
 | EV-08 | P0 | Report generator: markdown results table (pass rate ± CI, cost/success, p95, top failures) | Output pasted into README without hand-editing — implemented + tested; run with a real key to produce results | AI | ☑ |
 | EV-09 | P0 | Control arm: `no_tools` config in every report | Included by default in ablation runs | You | ◐ |
-| EV-10 | P1 | Gateway mode: runner posts datasets/configs/eval-runs/results via REST | Same results as direct mode on a smoke set — NOT built: runner is direct-mode only | AI | ☐ |
+| EV-10 | P1 | Gateway mode: runner posts datasets/configs/eval-runs/results via REST | Same results as direct mode on a smoke set — built; `gateway/tests/test_eval_gateway_mode.py` asserts identical RunRecords vs direct mode (real gateway + Postgres, scripted agent); live-checked on 2 abstain cases | AI | ☑ |
 | EV-11 | P1 | Regression gate (`--gate`): baseline paired test + absolute floors; exit code 1 on failure | Tested with synthetic baseline/candidate (`compare.gate`) | AI | ◐ |
 | EV-12 | P1 | Replay fixtures for CI: record LLM+tool I/O once, replay deterministically | CI eval-smoke runs offline, zero cost, deterministic | Both | ☐ |
 | EV-13 | P2 | LLM judge for `text_extract` with rubric; calibrated against ≥20 human labels (report agreement) | Agreement reported; judge never overrides deterministic scorers | Both | ☐ |

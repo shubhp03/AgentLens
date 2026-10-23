@@ -154,6 +154,9 @@ async def run_eval(
     max_cost_usd) is what we reserve per in-flight run; with no cap we reserve nothing and rely on
     the post-hoc spend check, so always set a cap on real runs."""
     results_path.parent.mkdir(parents=True, exist_ok=True)
+    await asyncio.to_thread(
+        results_path.touch
+    )  # a run that starts nothing (budget too small) must still leave a readable, empty file
     done = load_done(results_path)
     spent = sum(r.cost_usd for r in done.values())
     todo = [(c, i) for c in cases for i in range(repeats) if (c.case_key, i) not in done]

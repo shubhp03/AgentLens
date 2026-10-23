@@ -51,7 +51,7 @@ Code tour: [docs/CODE_WALKTHROUGH.md](docs/CODE_WALKTHROUGH.md) · Details: [doc
 
 ## Quickstart
 ```bash
-make setup && make test                            # Python workspace + 205 offline tests
+make setup && make test                            # Python workspace + 212 offline tests
 make dashboard-demo && make dashboard-serve        # UI on synthetic data -> http://localhost:4300 (no keys, no spend)
 # Real evaluation (needs ANTHROPIC_API_KEY, SEC_USER_AGENT, config/pricing.yaml):
 cp .env.example .env && set -a && source .env && set +a

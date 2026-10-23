@@ -157,6 +157,13 @@ This is the part that makes the project more than a demo.
   using an `asyncio.Condition` so valid runs wait rather than get skipped); a crash in one run is recorded, not fatal.
 - `report.py` — markdown report: pass rate ± CI (case-level), cost per success, latency p50/p95, per-category pass rates,
   failure-category breakdown, groundedness diagnostics.
+- `gateway.py` — **gateway mode (EV-10)**, switched on by `AGENTLENS_GATEWAY_URL` (+ `ADMIN_API_KEY`). `GatewayClient` registers the
+  dataset (content-addressed version) and config, creates the eval run, and per case POSTs `/runs {source: eval}` and follows the
+  run's SSE stream, rebuilding the same event list direct mode produces, so `run_one`, the scorers, classifier and report are shared.
+  Results are POSTed in batches of 200, then the eval run is completed once. Resume re-uses the eval run id saved in
+  `<out>/gateway_eval_run.json`; a budget stop leaves the eval run open so a re-run can finish it. Gateway-only end states
+  (`gateway_restart`, `timeout`) are scored as `provider_error`. Incomplete gold is refused before any model call.
+  Tested in `gateway/tests/test_eval_gateway_mode.py` (asserts identical records vs direct mode).
 - **Case-level pass = strict majority of repeats; a tie fails.** (Why: one lucky sample shouldn't count.)
 - `cli.py` — `agentlens-eval validate-dataset | run | report | compare`. `run` flags include `--budget-usd`, `--repeats`,
   `--split`, `--limit`, `--verified-only`, `--gate --baseline`. Exit code 3 = budget stopped the run.
@@ -247,5 +254,5 @@ goes one level up: gateway + agent + the real calculator MCP subprocess + Postgr
 - **TL-04** run the EDGAR tools against real SEC data and fix what breaks.
 - **EV-02** author and hand-verify the golden set.
 - **AG-10** one live Anthropic call to check the adapter.
-- Build and run the Docker images; run the dashboard against the live gateway (`docs/RUNNING.md` §4); EV-10 (gateway-mode eval runner).
+- Build and run the Docker images; run the dashboard against the live gateway (`docs/RUNNING.md` §4).
 - Only then: real eval run → real numbers → README table → LinkedIn. Resume bullets must use measured numbers only.
