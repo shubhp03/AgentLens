@@ -45,8 +45,12 @@ AgentLens: a tool-using SEC-filings agent + evaluation/observability platform. R
 ## Current state (read before picking work)
 - DONE and tested (205 offline tests + `make stack-smoke`): agent loop, MCP registry, tools, eval harness, schema V1+V2,
   Python gateway (auth, rate limit, cost cap, executor, SSE, evals API, contract test), Angular dashboard (synthetic demo data).
-- NOT DONE / UNVERIFIED: Docker images never built (no daemon in the authoring sandbox); dashboard never run against the live
-  gateway; no live LLM/SEC call made. EV-10 (gateway-mode eval runner) not built.
+- VERIFIED LIVE (2026-10-23, manual): live Anthropic + live EDGAR via the real MCP tool servers (3-case unscored pilot, $0.17),
+  and one question through Postgres 16 (`pgserver`) → agent → gateway → Angular dashboard in a browser (run list + trace detail
+  render, no console errors). Not automated; no scored eval has been run.
+- NOT DONE / UNVERIFIED: Docker images never built (no daemon in the authoring sandbox); dashboard live only for runs/trace
+  views (Evals pages not exercised on live data). EV-10 (gateway-mode eval runner) not built. The `agentlens-eval run` pilot
+  command cannot score the all-draft seed dataset (scorer raises on empty gold).
 - Owner-only: EV-02 golden set (hand-verified against filings), OPS-07 pricing, TL-04 live EDGAR check.
 - `docs/RUNNING.md` (run locally) and `docs/DEPLOY.md` (deploy) are the operating manuals.
 - `docs/CODE_WALKTHROUGH.md` explains every module; keep it updated when you change behaviour.
