@@ -1,0 +1,113 @@
+{
+ "id": "df936f91-9cb6-b79e-6462-916537659b03",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Globex Industries' revenue in the fourth quarter of fiscal 2027?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": true,
+  "value": null,
+  "unit": null,
+  "period": null,
+  "text": "This cannot be answered from public SEC filings.",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1531,
+  "output_tokens": 112,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.006273,
+  "latency_ms": 2236,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:45:19.880000Z",
+ "started_at": "2026-10-12T13:45:20Z",
+ "finished_at": "2026-10-12T13:45:22.236010Z",
+ "spans": [
+  {
+   "id": "4343e588-71c3-4d9a-983e-73ba9c3e846a",
+   "run_id": "df936f91-9cb6-b79e-6462-916537659b03",
+   "parent_span_id": "76736859-b684-4b05-b36b-549e329bf1c5",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:45:20Z",
+   "ended_at": "2026-10-12T13:45:22.236010Z",
+   "latency_ms": 2236,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Globex Industries' revenue in the fourth quarter of fiscal 2027?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "abstained": true,
+       "text": "This cannot be answered from public SEC filings."
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1531,
+   "output_tokens": 112,
+   "cost_usd": 0.006273,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "76736859-b684-4b05-b36b-549e329bf1c5",
+   "run_id": "df936f91-9cb6-b79e-6462-916537659b03",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:45:20Z",
+   "ended_at": "2026-10-12T13:45:22.236010Z",
+   "latency_ms": 2236,
+   "input": {
+    "question": "What was Globex Industries' revenue in the fourth quarter of fiscal 2027?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": true,
+     "value": null,
+     "unit": null,
+     "period": null,
+     "text": "This cannot be answered from public SEC filings.",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1531,
+   "output_tokens": 112,
+   "cost_usd": 0.006273,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

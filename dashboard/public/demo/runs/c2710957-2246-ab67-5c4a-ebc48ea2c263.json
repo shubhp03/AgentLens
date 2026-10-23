@@ -1,0 +1,113 @@
+{
+ "id": "c2710957-2246-ab67-5c4a-ebc48ea2c263",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Acme Corp's compound annual revenue growth rate from fiscal 2021 to fiscal 2023?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": true,
+  "value": null,
+  "unit": null,
+  "period": null,
+  "text": "I do not have this information.",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1668,
+  "output_tokens": 85,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.006279,
+  "latency_ms": 2424,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:25:59.880000Z",
+ "started_at": "2026-10-12T13:26:00Z",
+ "finished_at": "2026-10-12T13:26:02.424658Z",
+ "spans": [
+  {
+   "id": "0de7ee22-7a77-41c3-a2ac-3b2715db84b1",
+   "run_id": "c2710957-2246-ab67-5c4a-ebc48ea2c263",
+   "parent_span_id": "8dd7b3d4-85f2-4684-83e7-9c876e220d10",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:26:00Z",
+   "ended_at": "2026-10-12T13:26:02.424658Z",
+   "latency_ms": 2424,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Acme Corp's compound annual revenue growth rate from fiscal 2021 to fiscal 2023?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "abstained": true,
+       "text": "I do not have this information."
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1668,
+   "output_tokens": 85,
+   "cost_usd": 0.006279,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "8dd7b3d4-85f2-4684-83e7-9c876e220d10",
+   "run_id": "c2710957-2246-ab67-5c4a-ebc48ea2c263",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:26:00Z",
+   "ended_at": "2026-10-12T13:26:02.424658Z",
+   "latency_ms": 2424,
+   "input": {
+    "question": "What was Acme Corp's compound annual revenue growth rate from fiscal 2021 to fiscal 2023?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": true,
+     "value": null,
+     "unit": null,
+     "period": null,
+     "text": "I do not have this information.",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1668,
+   "output_tokens": 85,
+   "cost_usd": 0.006279,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

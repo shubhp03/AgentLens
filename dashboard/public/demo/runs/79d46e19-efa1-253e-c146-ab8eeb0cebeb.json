@@ -1,0 +1,116 @@
+{
+ "id": "79d46e19-efa1-253e-c146-ab8eeb0cebeb",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Acme Corp's net income for fiscal year 2022?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 620.28,
+  "unit": "USD_millions",
+  "period": "FY2022",
+  "text": "Acme Corp: 512.00 (USD_millions).",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1446,
+  "output_tokens": 128,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.006258,
+  "latency_ms": 1923,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:07:19.880000Z",
+ "started_at": "2026-10-12T13:07:20Z",
+ "finished_at": "2026-10-12T13:07:21.923374Z",
+ "spans": [
+  {
+   "id": "e80d4214-0a9a-44b0-b89f-424cbcb6e318",
+   "run_id": "79d46e19-efa1-253e-c146-ab8eeb0cebeb",
+   "parent_span_id": "c677a10d-3395-43f1-a912-626dcff4f9e5",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:07:20Z",
+   "ended_at": "2026-10-12T13:07:21.923374Z",
+   "latency_ms": 1923,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Acme Corp's net income for fiscal year 2022?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 620.28,
+       "unit": "USD_millions",
+       "period": "FY2022",
+       "text": "Acme Corp: 512.00 (USD_millions).",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1446,
+   "output_tokens": 128,
+   "cost_usd": 0.006258,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "c677a10d-3395-43f1-a912-626dcff4f9e5",
+   "run_id": "79d46e19-efa1-253e-c146-ab8eeb0cebeb",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:07:20Z",
+   "ended_at": "2026-10-12T13:07:21.923374Z",
+   "latency_ms": 1923,
+   "input": {
+    "question": "What was Acme Corp's net income for fiscal year 2022?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 620.28,
+     "unit": "USD_millions",
+     "period": "FY2022",
+     "text": "Acme Corp: 512.00 (USD_millions).",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1446,
+   "output_tokens": 128,
+   "cost_usd": 0.006258,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

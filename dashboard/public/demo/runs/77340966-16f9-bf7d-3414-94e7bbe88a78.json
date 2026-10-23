@@ -1,0 +1,116 @@
+{
+ "id": "77340966-16f9-bf7d-3414-94e7bbe88a78",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Globex Industries's net income for fiscal year 2023?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 870.18,
+  "unit": "USD_millions",
+  "period": "FY2023",
+  "text": "Globex Industries: 722.00 (USD_millions).",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1643,
+  "output_tokens": 167,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.007434,
+  "latency_ms": 1521,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:11:59.880000Z",
+ "started_at": "2026-10-12T13:12:00Z",
+ "finished_at": "2026-10-12T13:12:01.521373Z",
+ "spans": [
+  {
+   "id": "89b577ae-9a3c-45fb-b3c8-cdae78881f65",
+   "run_id": "77340966-16f9-bf7d-3414-94e7bbe88a78",
+   "parent_span_id": "e4077860-7ca3-49d6-a5be-7e8d63990a8c",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:12:00Z",
+   "ended_at": "2026-10-12T13:12:01.521373Z",
+   "latency_ms": 1521,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Globex Industries's net income for fiscal year 2023?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 870.18,
+       "unit": "USD_millions",
+       "period": "FY2023",
+       "text": "Globex Industries: 722.00 (USD_millions).",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1643,
+   "output_tokens": 167,
+   "cost_usd": 0.007434,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "e4077860-7ca3-49d6-a5be-7e8d63990a8c",
+   "run_id": "77340966-16f9-bf7d-3414-94e7bbe88a78",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:12:00Z",
+   "ended_at": "2026-10-12T13:12:01.521373Z",
+   "latency_ms": 1521,
+   "input": {
+    "question": "What was Globex Industries's net income for fiscal year 2023?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 870.18,
+     "unit": "USD_millions",
+     "period": "FY2023",
+     "text": "Globex Industries: 722.00 (USD_millions).",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1643,
+   "output_tokens": 167,
+   "cost_usd": 0.007434,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

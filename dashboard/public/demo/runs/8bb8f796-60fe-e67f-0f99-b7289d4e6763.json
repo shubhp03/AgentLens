@@ -1,0 +1,118 @@
+{
+ "id": "8bb8f796-60fe-e67f-0f99-b7289d4e6763",
+ "config_id": "1e09a7dc-94ca-5797-90e6-b432b96fea35",
+ "eval_run_id": "e3d0a31f-35c5-53a8-abff-17c45673bb16",
+ "source": "eval",
+ "question": "How many people does Acme Corp plan to hire next year?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": true,
+  "value": null,
+  "unit": null,
+  "period": null,
+  "text": "This cannot be answered from public SEC filings.",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1430,
+  "output_tokens": 72,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.00537,
+  "latency_ms": 1172,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-08T13:47:19.880000Z",
+ "started_at": "2026-10-08T13:47:20Z",
+ "finished_at": "2026-10-08T13:47:21.172124Z",
+ "spans": [
+  {
+   "id": "a0021cd8-da48-431f-8e9d-3036c94b04d7",
+   "run_id": "8bb8f796-60fe-e67f-0f99-b7289d4e6763",
+   "parent_span_id": "299c7412-47c6-46d0-b6d7-f1ecc9314bd7",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-08T13:47:20Z",
+   "ended_at": "2026-10-08T13:47:21.172124Z",
+   "latency_ms": 1172,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "How many people does Acme Corp plan to hire next year?"
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "abstained": true,
+       "text": "This cannot be answered from public SEC filings."
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1430,
+   "output_tokens": 72,
+   "cost_usd": 0.00537,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "299c7412-47c6-46d0-b6d7-f1ecc9314bd7",
+   "run_id": "8bb8f796-60fe-e67f-0f99-b7289d4e6763",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-08T13:47:20Z",
+   "ended_at": "2026-10-08T13:47:21.172124Z",
+   "latency_ms": 1172,
+   "input": {
+    "question": "How many people does Acme Corp plan to hire next year?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": true,
+     "value": null,
+     "unit": null,
+     "period": null,
+     "text": "This cannot be answered from public SEC filings.",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1430,
+   "output_tokens": 72,
+   "cost_usd": 0.00537,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

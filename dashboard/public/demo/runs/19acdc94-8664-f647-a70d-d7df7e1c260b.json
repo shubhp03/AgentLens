@@ -1,0 +1,116 @@
+{
+ "id": "19acdc94-8664-f647-a70d-d7df7e1c260b",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Globex Industries's operating margin (operating income / revenue) in fiscal 2023?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 24.06,
+  "unit": "percent",
+  "period": "FY2023",
+  "text": "Globex Industries: 10.97 (percent).",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1577,
+  "output_tokens": 185,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.007506,
+  "latency_ms": 1552,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:22:39.880000Z",
+ "started_at": "2026-10-12T13:22:40Z",
+ "finished_at": "2026-10-12T13:22:41.552607Z",
+ "spans": [
+  {
+   "id": "a714c8db-5802-4ff3-87db-19cbb4c59df8",
+   "run_id": "19acdc94-8664-f647-a70d-d7df7e1c260b",
+   "parent_span_id": "4a30294e-92b6-41e4-9a75-c4c4167a571c",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:22:40Z",
+   "ended_at": "2026-10-12T13:22:41.552607Z",
+   "latency_ms": 1552,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Globex Industries's operating margin (operating income / revenue) in fiscal 2023?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 24.06,
+       "unit": "percent",
+       "period": "FY2023",
+       "text": "Globex Industries: 10.97 (percent).",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1577,
+   "output_tokens": 185,
+   "cost_usd": 0.007506,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "4a30294e-92b6-41e4-9a75-c4c4167a571c",
+   "run_id": "19acdc94-8664-f647-a70d-d7df7e1c260b",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:22:40Z",
+   "ended_at": "2026-10-12T13:22:41.552607Z",
+   "latency_ms": 1552,
+   "input": {
+    "question": "What was Globex Industries's operating margin (operating income / revenue) in fiscal 2023?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 24.06,
+     "unit": "percent",
+     "period": "FY2023",
+     "text": "Globex Industries: 10.97 (percent).",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1577,
+   "output_tokens": 185,
+   "cost_usd": 0.007506,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

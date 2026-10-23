@@ -1,0 +1,213 @@
+{
+ "id": "362201d8-4721-b267-6144-0e2f0500ab03",
+ "config_id": "d1e4f267-9d5c-5506-96eb-b0bd1751fda0",
+ "eval_run_id": "75fa7e5c-2c3c-5b7e-89a5-b4348edb82f7",
+ "source": "eval",
+ "question": "What was Initech Holdings' revenue last year?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": true,
+  "value": null,
+  "unit": null,
+  "period": null,
+  "text": "This cannot be answered from public SEC filings.",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 4062,
+  "output_tokens": 303,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.001394,
+  "latency_ms": 1821,
+  "step_count": 2,
+  "tool_call_count": 1
+ },
+ "created_at": "2026-10-10T13:41:59.880000Z",
+ "started_at": "2026-10-10T13:42:00Z",
+ "finished_at": "2026-10-10T13:42:01.821713Z",
+ "spans": [
+  {
+   "id": "690406b5-2689-4d7e-bbd5-edc1b3ef5a94",
+   "run_id": "362201d8-4721-b267-6144-0e2f0500ab03",
+   "parent_span_id": "4b70e6b8-cf75-48bf-8818-5be01ff5d173",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:42:00Z",
+   "ended_at": "2026-10-10T13:42:00.842438Z",
+   "latency_ms": 842,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Initech Holdings' revenue last year?"
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1",
+      "name": "resolve_company",
+      "arguments": {
+       "query": "Initech Holdings"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1651,
+   "output_tokens": 93,
+   "cost_usd": 0.000529,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "448ebc40-1085-4dc2-abe9-53f51408837b",
+   "run_id": "362201d8-4721-b267-6144-0e2f0500ab03",
+   "parent_span_id": "4b70e6b8-cf75-48bf-8818-5be01ff5d173",
+   "seq": 2,
+   "type": "tool_call",
+   "name": "resolve_company",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:42:00.842438Z",
+   "ended_at": "2026-10-10T13:42:00.942667Z",
+   "latency_ms": 100,
+   "input": {
+    "query": "Initech Holdings"
+   },
+   "output": {
+    "content": "[]"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_1"
+   }
+  },
+  {
+   "id": "11c71187-03f2-44ea-9492-7afb0c5f9bbb",
+   "run_id": "362201d8-4721-b267-6144-0e2f0500ab03",
+   "parent_span_id": "4b70e6b8-cf75-48bf-8818-5be01ff5d173",
+   "seq": 3,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:42:00.942667Z",
+   "ended_at": "2026-10-10T13:42:01.821713Z",
+   "latency_ms": 879,
+   "input": {
+    "n_messages": 3,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_1",
+        "name": "resolve_company",
+        "arguments": {
+         "query": "Initech Holdings"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_1",
+        "is_error": false,
+        "content_chars": 2,
+        "content": "[]"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_2_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "abstained": true,
+       "text": "This cannot be answered from public SEC filings."
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 2411,
+   "output_tokens": 210,
+   "cost_usd": 0.00086525,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "4b70e6b8-cf75-48bf-8818-5be01ff5d173",
+   "run_id": "362201d8-4721-b267-6144-0e2f0500ab03",
+   "parent_span_id": null,
+   "seq": 4,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:42:00Z",
+   "ended_at": "2026-10-10T13:42:01.821713Z",
+   "latency_ms": 1821,
+   "input": {
+    "question": "What was Initech Holdings' revenue last year?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": true,
+     "value": null,
+     "unit": null,
+     "period": null,
+     "text": "This cannot be answered from public SEC filings.",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 4062,
+   "output_tokens": 303,
+   "cost_usd": 0.00139425,
+   "attributes": {
+    "steps": 2,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

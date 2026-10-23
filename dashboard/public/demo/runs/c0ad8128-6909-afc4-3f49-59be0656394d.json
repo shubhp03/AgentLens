@@ -1,0 +1,113 @@
+{
+ "id": "c0ad8128-6909-afc4-3f49-59be0656394d",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "Which reportable segments does Globex Industries disclose in its latest 10-K?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": null,
+  "unit": null,
+  "period": null,
+  "text": "Aerospace",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1579,
+  "output_tokens": 191,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.007602,
+  "latency_ms": 2512,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:30:39.880000Z",
+ "started_at": "2026-10-12T13:30:40Z",
+ "finished_at": "2026-10-12T13:30:42.512157Z",
+ "spans": [
+  {
+   "id": "b170b62c-d6a5-4ce2-afae-7de075957cb8",
+   "run_id": "c0ad8128-6909-afc4-3f49-59be0656394d",
+   "parent_span_id": "aa009c72-6535-4e1d-9e40-31bcdf323c63",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:30:40Z",
+   "ended_at": "2026-10-12T13:30:42.512157Z",
+   "latency_ms": 2512,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "Which reportable segments does Globex Industries disclose in its latest 10-K?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "text": "Aerospace",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1579,
+   "output_tokens": 191,
+   "cost_usd": 0.007602,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "aa009c72-6535-4e1d-9e40-31bcdf323c63",
+   "run_id": "c0ad8128-6909-afc4-3f49-59be0656394d",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:30:40Z",
+   "ended_at": "2026-10-12T13:30:42.512157Z",
+   "latency_ms": 2512,
+   "input": {
+    "question": "Which reportable segments does Globex Industries disclose in its latest 10-K?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": null,
+     "unit": null,
+     "period": null,
+     "text": "Aerospace",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1579,
+   "output_tokens": 191,
+   "cost_usd": 0.007602,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

@@ -1,0 +1,116 @@
+{
+ "id": "63e850d6-7d39-6c76-a6bc-75d3c9f81e01",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Globex Industries's total revenue for fiscal year 2023?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 10964.95,
+  "unit": "USD_millions",
+  "period": "FY2023",
+  "text": "Globex Industries: 9,205.00 (USD_millions).",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1555,
+  "output_tokens": 187,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.00747,
+  "latency_ms": 2658,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:08:39.880000Z",
+ "started_at": "2026-10-12T13:08:40Z",
+ "finished_at": "2026-10-12T13:08:42.658306Z",
+ "spans": [
+  {
+   "id": "a568ebee-9d9e-4799-95d3-5b5d233909e9",
+   "run_id": "63e850d6-7d39-6c76-a6bc-75d3c9f81e01",
+   "parent_span_id": "dd7cadd8-7b81-431c-b8c2-d3d2fa8bf06d",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:08:40Z",
+   "ended_at": "2026-10-12T13:08:42.658306Z",
+   "latency_ms": 2658,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Globex Industries's total revenue for fiscal year 2023?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 10964.95,
+       "unit": "USD_millions",
+       "period": "FY2023",
+       "text": "Globex Industries: 9,205.00 (USD_millions).",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1555,
+   "output_tokens": 187,
+   "cost_usd": 0.00747,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "dd7cadd8-7b81-431c-b8c2-d3d2fa8bf06d",
+   "run_id": "63e850d6-7d39-6c76-a6bc-75d3c9f81e01",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:08:40Z",
+   "ended_at": "2026-10-12T13:08:42.658306Z",
+   "latency_ms": 2658,
+   "input": {
+    "question": "What was Globex Industries's total revenue for fiscal year 2023?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 10964.95,
+     "unit": "USD_millions",
+     "period": "FY2023",
+     "text": "Globex Industries: 9,205.00 (USD_millions).",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1555,
+   "output_tokens": 187,
+   "cost_usd": 0.00747,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

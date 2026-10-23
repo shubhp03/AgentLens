@@ -1,0 +1,44 @@
+{
+ "n": 24,
+ "base_pass_rate": 0.5833333333333334,
+ "candidate_pass_rate": 0.8333333333333334,
+ "base_ci": [
+  0.3883433764938864,
+  0.7553265275346177
+ ],
+ "candidate_ci": [
+  0.6414652961213058,
+  0.9332143199927109
+ ],
+ "delta": 0.25,
+ "base_only": 0,
+ "candidate_only": 6,
+ "p_value": 0.03125,
+ "regression": false,
+ "flipped_cases": [
+  {
+   "case_key": "calc-acme-netmargin-fy22",
+   "direction": "improved"
+  },
+  {
+   "case_key": "calc-globex-opmargin-fy23",
+   "direction": "improved"
+  },
+  {
+   "case_key": "lookup-globex-revenue-fy2023",
+   "direction": "improved"
+  },
+  {
+   "case_key": "multi-combined-revenue-fy23",
+   "direction": "improved"
+  },
+  {
+   "case_key": "text-acme-segments",
+   "direction": "improved"
+  },
+  {
+   "case_key": "unans-acme-headcount-plan",
+   "direction": "improved"
+  }
+ ]
+}

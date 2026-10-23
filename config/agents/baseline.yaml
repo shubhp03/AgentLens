@@ -1,0 +1,9 @@
+# Example model ids; swap for whatever you are benchmarking.
+name: baseline
+provider: anthropic
+model: claude-sonnet-5-5
+system_prompt_id: system_v1
+temperature: 0.0
+max_steps: 12
+max_cost_usd: 0.50
+tool_allowlist: [resolve_company, list_filings, search_xbrl_concepts, get_financial_facts, get_filing_section, calculate]

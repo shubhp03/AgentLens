@@ -1,0 +1,116 @@
+{
+ "id": "a3d7b3de-c6da-74d8-b900-dadd1058c0ea",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Acme Corp's operating income for fiscal year 2023?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 964.19,
+  "unit": "USD_millions",
+  "period": "FY2023",
+  "text": "Acme Corp: 801.00 (USD_millions).",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1666,
+  "output_tokens": 110,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.006648,
+  "latency_ms": 2301,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:04:39.880000Z",
+ "started_at": "2026-10-12T13:04:40Z",
+ "finished_at": "2026-10-12T13:04:42.301347Z",
+ "spans": [
+  {
+   "id": "64a75965-de36-4420-a00f-304c8c6c184f",
+   "run_id": "a3d7b3de-c6da-74d8-b900-dadd1058c0ea",
+   "parent_span_id": "30b9763b-1ede-4f0a-ab3b-ee42e83caf9c",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:04:40Z",
+   "ended_at": "2026-10-12T13:04:42.301347Z",
+   "latency_ms": 2301,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Acme Corp's operating income for fiscal year 2023?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 964.19,
+       "unit": "USD_millions",
+       "period": "FY2023",
+       "text": "Acme Corp: 801.00 (USD_millions).",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1666,
+   "output_tokens": 110,
+   "cost_usd": 0.006648,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "30b9763b-1ede-4f0a-ab3b-ee42e83caf9c",
+   "run_id": "a3d7b3de-c6da-74d8-b900-dadd1058c0ea",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:04:40Z",
+   "ended_at": "2026-10-12T13:04:42.301347Z",
+   "latency_ms": 2301,
+   "input": {
+    "question": "What was Acme Corp's operating income for fiscal year 2023?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 964.19,
+     "unit": "USD_millions",
+     "period": "FY2023",
+     "text": "Acme Corp: 801.00 (USD_millions).",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1666,
+   "output_tokens": 110,
+   "cost_usd": 0.006648,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

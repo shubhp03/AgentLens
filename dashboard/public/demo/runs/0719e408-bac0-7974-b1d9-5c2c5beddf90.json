@@ -1,0 +1,432 @@
+{
+ "id": "0719e408-bac0-7974-b1d9-5c2c5beddf90",
+ "config_id": "d1e4f267-9d5c-5506-96eb-b0bd1751fda0",
+ "eval_run_id": "75fa7e5c-2c3c-5b7e-89a5-b4348edb82f7",
+ "source": "eval",
+ "question": "Which reportable segments does Acme Corp disclose in its latest 10-K?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": null,
+  "unit": null,
+  "period": null,
+  "text": "Industrial",
+  "citations": [
+   {
+    "accession": "9990102023-23-000001",
+    "section": "1",
+    "concept": null
+   }
+  ]
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 12070,
+  "output_tokens": 407,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.003526,
+  "latency_ms": 6581,
+  "step_count": 4,
+  "tool_call_count": 3
+ },
+ "created_at": "2026-10-10T13:27:59.880000Z",
+ "started_at": "2026-10-10T13:28:00Z",
+ "finished_at": "2026-10-10T13:28:06.581421Z",
+ "spans": [
+  {
+   "id": "6cb4b7c1-6a44-4dfb-aa8c-52e16614b2a0",
+   "run_id": "0719e408-bac0-7974-b1d9-5c2c5beddf90",
+   "parent_span_id": "5e197031-c66f-45d1-bdca-0e35149901f7",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:28:00Z",
+   "ended_at": "2026-10-10T13:28:01.201284Z",
+   "latency_ms": 1201,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "Which reportable segments does Acme Corp disclose in its latest 10-K?"
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1",
+      "name": "resolve_company",
+      "arguments": {
+       "query": "Acme Corp"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1440,
+   "output_tokens": 150,
+   "cost_usd": 0.0005475,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "e9a03be5-a18c-4780-9dbf-85bab4d0e63f",
+   "run_id": "0719e408-bac0-7974-b1d9-5c2c5beddf90",
+   "parent_span_id": "5e197031-c66f-45d1-bdca-0e35149901f7",
+   "seq": 2,
+   "type": "tool_call",
+   "name": "resolve_company",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:28:01.201284Z",
+   "ended_at": "2026-10-10T13:28:01.730923Z",
+   "latency_ms": 529,
+   "input": {
+    "query": "Acme Corp"
+   },
+   "output": {
+    "content": "[{\"cik\": \"0009990001\", \"name\": \"Acme Corp\"}]"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_1"
+   }
+  },
+  {
+   "id": "c61683fd-7077-4b87-9d35-89bad6ff9940",
+   "run_id": "0719e408-bac0-7974-b1d9-5c2c5beddf90",
+   "parent_span_id": "5e197031-c66f-45d1-bdca-0e35149901f7",
+   "seq": 3,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:28:01.730923Z",
+   "ended_at": "2026-10-10T13:28:02.611402Z",
+   "latency_ms": 880,
+   "input": {
+    "n_messages": 3,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_1",
+        "name": "resolve_company",
+        "arguments": {
+         "query": "Acme Corp"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_1",
+        "is_error": false,
+        "content_chars": 44,
+        "content": "[{\"cik\": \"0009990001\", \"name\": \"Acme Corp\"}]"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_2",
+      "name": "list_filings",
+      "arguments": {
+       "cik": "0009990001",
+       "form": "10-K"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 2641,
+   "output_tokens": 95,
+   "cost_usd": 0.000779,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "71111919-9c89-4fac-bd7c-4c6e518aee76",
+   "run_id": "0719e408-bac0-7974-b1d9-5c2c5beddf90",
+   "parent_span_id": "5e197031-c66f-45d1-bdca-0e35149901f7",
+   "seq": 4,
+   "type": "tool_call",
+   "name": "list_filings",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:28:02.611402Z",
+   "ended_at": "2026-10-10T13:28:02.934204Z",
+   "latency_ms": 322,
+   "input": {
+    "cik": "0009990001",
+    "form": "10-K"
+   },
+   "output": {
+    "content": "[{\"accession\": \"9990102023-23-000001\", \"form\": \"10-K\", \"primary_document\": \"annual.htm\"}]"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_2"
+   }
+  },
+  {
+   "id": "425b50bb-1361-490d-bf07-638631bf4fa3",
+   "run_id": "0719e408-bac0-7974-b1d9-5c2c5beddf90",
+   "parent_span_id": "5e197031-c66f-45d1-bdca-0e35149901f7",
+   "seq": 5,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:28:02.934204Z",
+   "ended_at": "2026-10-10T13:28:04.153520Z",
+   "latency_ms": 1219,
+   "input": {
+    "n_messages": 5,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_2",
+        "name": "list_filings",
+        "arguments": {
+         "cik": "0009990001",
+         "form": "10-K"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_2",
+        "is_error": false,
+        "content_chars": 89,
+        "content": "[{\"accession\": \"9990102023-23-000001\", \"form\": \"10-K\", \"primary_document\": \"annual.htm\"}]"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_3",
+      "name": "get_filing_section",
+      "arguments": {
+       "cik": "0009990001",
+       "accession": "9990102023-23-000001",
+       "item": "1",
+       "primary_document": "annual.htm"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 3540,
+   "output_tokens": 70,
+   "cost_usd": 0.0009725,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "5cecf38a-64d6-4787-a7b8-a1f1b481ec54",
+   "run_id": "0719e408-bac0-7974-b1d9-5c2c5beddf90",
+   "parent_span_id": "5e197031-c66f-45d1-bdca-0e35149901f7",
+   "seq": 6,
+   "type": "tool_call",
+   "name": "get_filing_section",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:28:04.153520Z",
+   "ended_at": "2026-10-10T13:28:05.764429Z",
+   "latency_ms": 1610,
+   "input": {
+    "cik": "0009990001",
+    "accession": "9990102023-23-000001",
+    "item": "1",
+    "primary_document": "annual.htm"
+   },
+   "output": {
+    "content": "{\"item\": \"1\", \"untrusted_text\": \"Acme Corp operates through the following reportable segments: Industrial. The Industrial segment is the largest by revenue.\"}"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_3"
+   }
+  },
+  {
+   "id": "8125e7b9-be36-4b7b-9eb1-5b160a386469",
+   "run_id": "0719e408-bac0-7974-b1d9-5c2c5beddf90",
+   "parent_span_id": "5e197031-c66f-45d1-bdca-0e35149901f7",
+   "seq": 7,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:28:05.764429Z",
+   "ended_at": "2026-10-10T13:28:06.581421Z",
+   "latency_ms": 816,
+   "input": {
+    "n_messages": 7,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_3",
+        "name": "get_filing_section",
+        "arguments": {
+         "cik": "0009990001",
+         "accession": "9990102023-23-000001",
+         "item": "1",
+         "primary_document": "annual.htm"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_3",
+        "is_error": false,
+        "content_chars": 158,
+        "content": "{\"item\": \"1\", \"untrusted_text\": \"Acme Corp operates through the following reportable segments: Industrial. The Industrial segment is the largest by revenue.\"}"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_4_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "text": "Industrial",
+       "citations": [
+        {
+         "accession": "9990102023-23-000001",
+         "section": "1"
+        }
+       ]
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 4449,
+   "output_tokens": 92,
+   "cost_usd": 0.00122725,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "5e197031-c66f-45d1-bdca-0e35149901f7",
+   "run_id": "0719e408-bac0-7974-b1d9-5c2c5beddf90",
+   "parent_span_id": null,
+   "seq": 8,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:28:00Z",
+   "ended_at": "2026-10-10T13:28:06.581421Z",
+   "latency_ms": 6581,
+   "input": {
+    "question": "Which reportable segments does Acme Corp disclose in its latest 10-K?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": null,
+     "unit": null,
+     "period": null,
+     "text": "Industrial",
+     "citations": [
+      {
+       "accession": "9990102023-23-000001",
+       "section": "1",
+       "concept": null
+      }
+     ]
+    }
+   },
+   "error": null,
+   "input_tokens": 12070,
+   "output_tokens": 407,
+   "cost_usd": 0.00352625,
+   "attributes": {
+    "steps": 4,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

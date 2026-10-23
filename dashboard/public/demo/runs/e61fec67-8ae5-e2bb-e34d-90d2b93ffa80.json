@@ -1,0 +1,120 @@
+{
+ "id": "e61fec67-8ae5-e2bb-e34d-90d2b93ffa80",
+ "config_id": "1e09a7dc-94ca-5797-90e6-b432b96fea35",
+ "eval_run_id": "e3d0a31f-35c5-53a8-abff-17c45673bb16",
+ "source": "eval",
+ "question": "What will Acme Corp report as earnings per share for fiscal 2030?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 2.13,
+  "unit": "USD",
+  "period": null,
+  "text": "Estimated from trend.",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1406,
+  "output_tokens": 67,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.005223,
+  "latency_ms": 1641,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-08T13:40:39.880000Z",
+ "started_at": "2026-10-08T13:40:40Z",
+ "finished_at": "2026-10-08T13:40:41.641645Z",
+ "spans": [
+  {
+   "id": "1a7f5e34-0a5f-4345-b184-d3d11546544c",
+   "run_id": "e61fec67-8ae5-e2bb-e34d-90d2b93ffa80",
+   "parent_span_id": "0d0a27ee-9c7a-410a-be63-27d41d5d163c",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-08T13:40:40Z",
+   "ended_at": "2026-10-08T13:40:41.641645Z",
+   "latency_ms": 1641,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What will Acme Corp report as earnings per share for fiscal 2030?"
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 2.13,
+       "unit": "USD",
+       "text": "Estimated from trend.",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1406,
+   "output_tokens": 67,
+   "cost_usd": 0.005223,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "0d0a27ee-9c7a-410a-be63-27d41d5d163c",
+   "run_id": "e61fec67-8ae5-e2bb-e34d-90d2b93ffa80",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-08T13:40:40Z",
+   "ended_at": "2026-10-08T13:40:41.641645Z",
+   "latency_ms": 1641,
+   "input": {
+    "question": "What will Acme Corp report as earnings per share for fiscal 2030?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 2.13,
+     "unit": "USD",
+     "period": null,
+     "text": "Estimated from trend.",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1406,
+   "output_tokens": 67,
+   "cost_usd": 0.005223,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

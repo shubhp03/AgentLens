@@ -1,0 +1,116 @@
+{
+ "id": "f848374d-aa06-073a-569e-6dd3b107d6c7",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Globex Industries's total revenue for fiscal year 2021?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 10863.8,
+  "unit": "USD_millions",
+  "period": "FY2021",
+  "text": "Globex Industries: 9,120.00 (USD_millions).",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1428,
+  "output_tokens": 231,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.007749,
+  "latency_ms": 2384,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:15:19.880000Z",
+ "started_at": "2026-10-12T13:15:20Z",
+ "finished_at": "2026-10-12T13:15:22.384169Z",
+ "spans": [
+  {
+   "id": "a5a4ad57-a2be-435d-ae6f-75c7ce53b91f",
+   "run_id": "f848374d-aa06-073a-569e-6dd3b107d6c7",
+   "parent_span_id": "3bf887a5-07c8-475e-a479-28a906281111",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:15:20Z",
+   "ended_at": "2026-10-12T13:15:22.384169Z",
+   "latency_ms": 2384,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Globex Industries's total revenue for fiscal year 2021?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 10863.8,
+       "unit": "USD_millions",
+       "period": "FY2021",
+       "text": "Globex Industries: 9,120.00 (USD_millions).",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1428,
+   "output_tokens": 231,
+   "cost_usd": 0.007749,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "3bf887a5-07c8-475e-a479-28a906281111",
+   "run_id": "f848374d-aa06-073a-569e-6dd3b107d6c7",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:15:20Z",
+   "ended_at": "2026-10-12T13:15:22.384169Z",
+   "latency_ms": 2384,
+   "input": {
+    "question": "What was Globex Industries's total revenue for fiscal year 2021?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 10863.8,
+     "unit": "USD_millions",
+     "period": "FY2021",
+     "text": "Globex Industries: 9,120.00 (USD_millions).",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1428,
+   "output_tokens": 231,
+   "cost_usd": 0.007749,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

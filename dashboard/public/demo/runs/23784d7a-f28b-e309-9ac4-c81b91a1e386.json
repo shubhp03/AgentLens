@@ -1,0 +1,113 @@
+{
+ "id": "23784d7a-f28b-e309-9ac4-c81b91a1e386",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Acme Corp's total revenue for fiscal year 2022?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": true,
+  "value": null,
+  "unit": null,
+  "period": null,
+  "text": "I do not have this information.",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1487,
+  "output_tokens": 139,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.006546,
+  "latency_ms": 1176,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:01:59.880000Z",
+ "started_at": "2026-10-12T13:02:00Z",
+ "finished_at": "2026-10-12T13:02:01.176326Z",
+ "spans": [
+  {
+   "id": "2940b2f7-10f8-4a28-b9b7-401e4e6f4188",
+   "run_id": "23784d7a-f28b-e309-9ac4-c81b91a1e386",
+   "parent_span_id": "6eecc6c3-25de-48e6-b72c-c47ec0525233",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:02:00Z",
+   "ended_at": "2026-10-12T13:02:01.176326Z",
+   "latency_ms": 1176,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Acme Corp's total revenue for fiscal year 2022?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "abstained": true,
+       "text": "I do not have this information."
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1487,
+   "output_tokens": 139,
+   "cost_usd": 0.006546,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "6eecc6c3-25de-48e6-b72c-c47ec0525233",
+   "run_id": "23784d7a-f28b-e309-9ac4-c81b91a1e386",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:02:00Z",
+   "ended_at": "2026-10-12T13:02:01.176326Z",
+   "latency_ms": 1176,
+   "input": {
+    "question": "What was Acme Corp's total revenue for fiscal year 2022?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": true,
+     "value": null,
+     "unit": null,
+     "period": null,
+     "text": "I do not have this information.",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1487,
+   "output_tokens": 139,
+   "cost_usd": 0.006546,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

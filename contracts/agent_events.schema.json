@@ -1,0 +1,506 @@
+{
+  "$defs": {
+    "Answer": {
+      "properties": {
+        "abstained": {
+          "default": false,
+          "description": "True if the question cannot be answered from public SEC filings (future data, missing company, ambiguous/underspecified).",
+          "title": "Abstained",
+          "type": "boolean"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Numeric answer, if the question is numeric",
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "enum": [
+                "USD",
+                "USD_thousands",
+                "USD_millions",
+                "USD_billions",
+                "percent",
+                "ratio",
+                "shares",
+                "count",
+                "text"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unit of `value`",
+          "title": "Unit"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. 'FY2023' or 'Q2 2024'",
+          "title": "Period"
+        },
+        "text": {
+          "description": "Short explanation or the textual answer",
+          "title": "Text",
+          "type": "string"
+        },
+        "citations": {
+          "items": {
+            "$ref": "#/$defs/Citation"
+          },
+          "title": "Citations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "Answer",
+      "type": "object"
+    },
+    "Citation": {
+      "properties": {
+        "accession": {
+          "description": "SEC accession number, e.g. 0000000000-00-000000",
+          "title": "Accession",
+          "type": "string"
+        },
+        "section": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "10-K/10-Q item, e.g. '7' or '1A'",
+          "title": "Section"
+        },
+        "concept": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "XBRL concept, e.g. 'us-gaap:Revenues'",
+          "title": "Concept"
+        }
+      },
+      "required": [
+        "accession"
+      ],
+      "title": "Citation",
+      "type": "object"
+    },
+    "RunFinished": {
+      "properties": {
+        "kind": {
+          "const": "run.finished",
+          "default": "run.finished",
+          "title": "Kind",
+          "type": "string"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "failed",
+            "cancelled"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "termination_reason": {
+          "enum": [
+            "answered",
+            "step_limit",
+            "budget_exceeded",
+            "tool_failure",
+            "provider_error",
+            "timeout",
+            "cancelled"
+          ],
+          "title": "Termination Reason",
+          "type": "string"
+        },
+        "final_answer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Answer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "totals": {
+          "$ref": "#/$defs/RunTotals"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        },
+        "ended_at": {
+          "format": "date-time",
+          "title": "Ended At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "status",
+        "termination_reason"
+      ],
+      "title": "RunFinished",
+      "type": "object"
+    },
+    "RunStarted": {
+      "properties": {
+        "kind": {
+          "const": "run.started",
+          "default": "run.started",
+          "title": "Kind",
+          "type": "string"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id"
+      ],
+      "title": "RunStarted",
+      "type": "object"
+    },
+    "RunTotals": {
+      "properties": {
+        "usage": {
+          "$ref": "#/$defs/Usage"
+        },
+        "cost_usd": {
+          "default": 0.0,
+          "title": "Cost Usd",
+          "type": "number"
+        },
+        "latency_ms": {
+          "default": 0,
+          "title": "Latency Ms",
+          "type": "integer"
+        },
+        "steps": {
+          "default": 0,
+          "title": "Steps",
+          "type": "integer"
+        },
+        "tool_calls": {
+          "default": 0,
+          "title": "Tool Calls",
+          "type": "integer"
+        }
+      },
+      "title": "RunTotals",
+      "type": "object"
+    },
+    "SpanFinished": {
+      "properties": {
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "span_id": {
+          "format": "uuid",
+          "title": "Span Id",
+          "type": "string"
+        },
+        "parent_span_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Span Id"
+        },
+        "seq": {
+          "description": "Monotonic per run; defines display order",
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "enum": [
+            "agent",
+            "llm_call",
+            "tool_call"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "kind": {
+          "const": "span.finished",
+          "default": "span.finished",
+          "title": "Kind",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "ended_at": {
+          "format": "date-time",
+          "title": "Ended At",
+          "type": "string"
+        },
+        "status": {
+          "default": "ok",
+          "enum": [
+            "ok",
+            "error"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "input": {
+          "additionalProperties": true,
+          "title": "Input",
+          "type": "object"
+        },
+        "output": {
+          "additionalProperties": true,
+          "title": "Output",
+          "type": "object"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Usage"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "cost_usd": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Usd"
+        },
+        "attributes": {
+          "additionalProperties": true,
+          "title": "Attributes",
+          "type": "object"
+        }
+      },
+      "required": [
+        "run_id",
+        "span_id",
+        "seq",
+        "type",
+        "name",
+        "started_at",
+        "ended_at"
+      ],
+      "title": "SpanFinished",
+      "type": "object"
+    },
+    "SpanStarted": {
+      "description": "Optional (P1): lets the dashboard show in-flight tool calls.",
+      "properties": {
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "span_id": {
+          "format": "uuid",
+          "title": "Span Id",
+          "type": "string"
+        },
+        "parent_span_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Span Id"
+        },
+        "seq": {
+          "description": "Monotonic per run; defines display order",
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "enum": [
+            "agent",
+            "llm_call",
+            "tool_call"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "kind": {
+          "const": "span.started",
+          "default": "span.started",
+          "title": "Kind",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "span_id",
+        "seq",
+        "type",
+        "name"
+      ],
+      "title": "SpanStarted",
+      "type": "object"
+    },
+    "Usage": {
+      "description": "Token usage. `input_tokens` EXCLUDES cache-read tokens (those are priced separately).",
+      "properties": {
+        "input_tokens": {
+          "default": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "default": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "cache_read_tokens": {
+          "default": 0,
+          "title": "Cache Read Tokens",
+          "type": "integer"
+        }
+      },
+      "title": "Usage",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "run.finished": "#/$defs/RunFinished",
+      "run.started": "#/$defs/RunStarted",
+      "span.finished": "#/$defs/SpanFinished",
+      "span.started": "#/$defs/SpanStarted"
+    },
+    "propertyName": "kind"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/RunStarted"
+    },
+    {
+      "$ref": "#/$defs/SpanStarted"
+    },
+    {
+      "$ref": "#/$defs/SpanFinished"
+    },
+    {
+      "$ref": "#/$defs/RunFinished"
+    }
+  ]
+}

@@ -1,0 +1,334 @@
+{
+ "id": "22cee550-b378-499d-a80e-78af1b93775f",
+ "config_id": "d1e4f267-9d5c-5506-96eb-b0bd1751fda0",
+ "eval_run_id": "75fa7e5c-2c3c-5b7e-89a5-b4348edb82f7",
+ "source": "eval",
+ "question": "What was Acme Corp's total revenue for fiscal year 2023?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 5310.0,
+  "unit": "USD_millions",
+  "period": "FY2023",
+  "text": "Acme Corp: 5,310.00 (USD_millions).",
+  "citations": [
+   {
+    "accession": "9990102023-23-000001",
+    "section": null,
+    "concept": "us-gaap:Revenues"
+   }
+  ]
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 7469,
+  "output_tokens": 557,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.002563,
+  "latency_ms": 2929,
+  "step_count": 3,
+  "tool_call_count": 2
+ },
+ "created_at": "2026-10-10T13:00:39.880000Z",
+ "started_at": "2026-10-10T13:00:40Z",
+ "finished_at": "2026-10-10T13:00:42.929110Z",
+ "spans": [
+  {
+   "id": "39ac6f2b-77e5-42d5-9e46-234c7b95442b",
+   "run_id": "22cee550-b378-499d-a80e-78af1b93775f",
+   "parent_span_id": "060f059a-daa8-4c4e-a999-22e5ca944d23",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:00:40Z",
+   "ended_at": "2026-10-10T13:00:40.895495Z",
+   "latency_ms": 895,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Acme Corp's total revenue for fiscal year 2023?"
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1",
+      "name": "resolve_company",
+      "arguments": {
+       "query": "Acme Corp"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1536,
+   "output_tokens": 199,
+   "cost_usd": 0.00063275,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "4ea7296e-c16e-4122-8604-d0485219f8f9",
+   "run_id": "22cee550-b378-499d-a80e-78af1b93775f",
+   "parent_span_id": "060f059a-daa8-4c4e-a999-22e5ca944d23",
+   "seq": 2,
+   "type": "tool_call",
+   "name": "resolve_company",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:00:40.895495Z",
+   "ended_at": "2026-10-10T13:00:41.203731Z",
+   "latency_ms": 308,
+   "input": {
+    "query": "Acme Corp"
+   },
+   "output": {
+    "content": "[{\"cik\": \"0009990001\", \"name\": \"Acme Corp\"}]"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_1"
+   }
+  },
+  {
+   "id": "996f02a0-a84f-4777-bfc6-c3675ef82343",
+   "run_id": "22cee550-b378-499d-a80e-78af1b93775f",
+   "parent_span_id": "060f059a-daa8-4c4e-a999-22e5ca944d23",
+   "seq": 3,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:00:41.203731Z",
+   "ended_at": "2026-10-10T13:00:41.893589Z",
+   "latency_ms": 689,
+   "input": {
+    "n_messages": 3,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_1",
+        "name": "resolve_company",
+        "arguments": {
+         "query": "Acme Corp"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_1",
+        "is_error": false,
+        "content_chars": 44,
+        "content": "[{\"cik\": \"0009990001\", \"name\": \"Acme Corp\"}]"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_2",
+      "name": "get_financial_facts",
+      "arguments": {
+       "cik": "0009990001",
+       "concept": "Revenues",
+       "period_type": "annual"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 2505,
+   "output_tokens": 143,
+   "cost_usd": 0.000805,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "ab8e9d20-f373-4fc2-9251-8991f6cbd7e3",
+   "run_id": "22cee550-b378-499d-a80e-78af1b93775f",
+   "parent_span_id": "060f059a-daa8-4c4e-a999-22e5ca944d23",
+   "seq": 4,
+   "type": "tool_call",
+   "name": "get_financial_facts",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:00:41.893589Z",
+   "ended_at": "2026-10-10T13:00:42.390146Z",
+   "latency_ms": 496,
+   "input": {
+    "cik": "0009990001",
+    "concept": "Revenues",
+    "period_type": "annual"
+   },
+   "output": {
+    "content": "[{\"start\": \"2021-01-01\", \"end\": \"2021-12-31\", \"value\": 4210000000.0, \"unit\": \"USD\", \"accession\": \"9990102021-21-000001\", \"form\": \"10-K\", \"filed\": \"2022-02-15\", \"reported_in_fy\": 2021, \"reported_in_fp\": \"FY\"}, {\"start\": \"2022-01-01\", \"end\": \"2022-12-31\", \"value\": 4820000000.0, \"unit\": \"USD\", \"accession\": \"9990102022-22-000001\", \"form\": \"10-K\", \"filed\": \"2023-02-15\", \"reported_in_fy\": 2022, \"reported_in_fp\": \"FY\"}, {\"start\": \"2023-01-01\", \"end\": \"2023-12-31\", \"value\": 5310000000.0, \"unit\": \"USD\", \"accession\": \"9990102023-23-000001\", \"form\": \"10-K\", \"filed\": \"2024-02-15\", \"reported_in_fy\": 2023, \"reported_in_fp\": \"FY\"}]"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_2"
+   }
+  },
+  {
+   "id": "ef07640e-8df1-4c44-a148-c2c78499b81f",
+   "run_id": "22cee550-b378-499d-a80e-78af1b93775f",
+   "parent_span_id": "060f059a-daa8-4c4e-a999-22e5ca944d23",
+   "seq": 5,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:00:42.390146Z",
+   "ended_at": "2026-10-10T13:00:42.929110Z",
+   "latency_ms": 538,
+   "input": {
+    "n_messages": 5,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_2",
+        "name": "get_financial_facts",
+        "arguments": {
+         "cik": "0009990001",
+         "concept": "Revenues",
+         "period_type": "annual"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_2",
+        "is_error": false,
+        "content_chars": 624,
+        "content": "[{\"start\": \"2021-01-01\", \"end\": \"2021-12-31\", \"value\": 4210000000.0, \"unit\": \"USD\", \"accession\": \"9990102021-21-000001\", \"form\": \"10-K\", \"filed\": \"2022-02-15\", \"reported_in_fy\": 2021, \"reported_in_fp\": \"FY\"}, {\"start\": \"2022-01-01\", \"end\": \"2022-12-31\", \"value\": 4820000000.0, \"unit\": \"USD\", \"accession\": \"9990102022-22-000001\", \"form\": \"10-K\", \"filed\": \"2023-02-15\", \"reported_in_fy\": 2022, \"reported_in_fp\": \"FY\"}, {\"start\": \"2023-01-01\", \"end\": \"2023-12-31\", \"value\": 5310000000.0, \"unit\": \"USD\", \"accession\": \"9990102023-23-000001\", \"form\": \"10-K\", \"filed\": \"2024-02-15\", \"reported_in_fy\": 2023, \"reported_in_fp\": \"FY\"}]"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_3_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 5310.0,
+       "unit": "USD_millions",
+       "period": "FY2023",
+       "text": "Acme Corp: 5,310.00 (USD_millions).",
+       "citations": [
+        {
+         "accession": "9990102023-23-000001",
+         "concept": "us-gaap:Revenues"
+        }
+       ]
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 3428,
+   "output_tokens": 215,
+   "cost_usd": 0.00112575,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "060f059a-daa8-4c4e-a999-22e5ca944d23",
+   "run_id": "22cee550-b378-499d-a80e-78af1b93775f",
+   "parent_span_id": null,
+   "seq": 6,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:00:40Z",
+   "ended_at": "2026-10-10T13:00:42.929110Z",
+   "latency_ms": 2929,
+   "input": {
+    "question": "What was Acme Corp's total revenue for fiscal year 2023?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 5310.0,
+     "unit": "USD_millions",
+     "period": "FY2023",
+     "text": "Acme Corp: 5,310.00 (USD_millions).",
+     "citations": [
+      {
+       "accession": "9990102023-23-000001",
+       "section": null,
+       "concept": "us-gaap:Revenues"
+      }
+     ]
+    }
+   },
+   "error": null,
+   "input_tokens": 7469,
+   "output_tokens": 557,
+   "cost_usd": 0.0025635,
+   "attributes": {
+    "steps": 3,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

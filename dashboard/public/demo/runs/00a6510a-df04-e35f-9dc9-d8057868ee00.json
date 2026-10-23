@@ -1,0 +1,334 @@
+{
+ "id": "00a6510a-df04-e35f-9dc9-d8057868ee00",
+ "config_id": "1e09a7dc-94ca-5797-90e6-b432b96fea35",
+ "eval_run_id": "e3d0a31f-35c5-53a8-abff-17c45673bb16",
+ "source": "eval",
+ "question": "What was Globex Industries's operating income for fiscal year 2022?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 1260.0,
+  "unit": "USD_millions",
+  "period": "FY2022",
+  "text": "Globex Industries: 1,260.00 (USD_millions).",
+  "citations": [
+   {
+    "accession": "9990202022-22-000001",
+    "section": null,
+    "concept": "us-gaap:OperatingIncomeLoss"
+   }
+  ]
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 7449,
+  "output_tokens": 430,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.028797,
+  "latency_ms": 6251,
+  "step_count": 3,
+  "tool_call_count": 2
+ },
+ "created_at": "2026-10-08T13:11:19.880000Z",
+ "started_at": "2026-10-08T13:11:20Z",
+ "finished_at": "2026-10-08T13:11:26.251075Z",
+ "spans": [
+  {
+   "id": "6e96c173-54c4-4220-9f0d-2d89faaaa691",
+   "run_id": "00a6510a-df04-e35f-9dc9-d8057868ee00",
+   "parent_span_id": "3b0d5781-a1ae-4853-95d8-3ecebdd50295",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-08T13:11:20Z",
+   "ended_at": "2026-10-08T13:11:22.374343Z",
+   "latency_ms": 2374,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Globex Industries's operating income for fiscal year 2022?"
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1",
+      "name": "resolve_company",
+      "arguments": {
+       "query": "Globex Industries"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1595,
+   "output_tokens": 138,
+   "cost_usd": 0.006855,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "40d9b7bd-147b-4c45-8382-345b9c641238",
+   "run_id": "00a6510a-df04-e35f-9dc9-d8057868ee00",
+   "parent_span_id": "3b0d5781-a1ae-4853-95d8-3ecebdd50295",
+   "seq": 2,
+   "type": "tool_call",
+   "name": "resolve_company",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-08T13:11:22.374343Z",
+   "ended_at": "2026-10-08T13:11:22.586854Z",
+   "latency_ms": 212,
+   "input": {
+    "query": "Globex Industries"
+   },
+   "output": {
+    "content": "[{\"cik\": \"0009990002\", \"name\": \"Globex Industries\"}]"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_1"
+   }
+  },
+  {
+   "id": "9f2a121e-f694-4d1b-9f14-138a2dd56762",
+   "run_id": "00a6510a-df04-e35f-9dc9-d8057868ee00",
+   "parent_span_id": "3b0d5781-a1ae-4853-95d8-3ecebdd50295",
+   "seq": 3,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-08T13:11:22.586854Z",
+   "ended_at": "2026-10-08T13:11:23.873669Z",
+   "latency_ms": 1286,
+   "input": {
+    "n_messages": 3,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_1",
+        "name": "resolve_company",
+        "arguments": {
+         "query": "Globex Industries"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_1",
+        "is_error": false,
+        "content_chars": 52,
+        "content": "[{\"cik\": \"0009990002\", \"name\": \"Globex Industries\"}]"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_2",
+      "name": "get_financial_facts",
+      "arguments": {
+       "cik": "0009990002",
+       "concept": "OperatingIncomeLoss",
+       "period_type": "annual"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 2397,
+   "output_tokens": 164,
+   "cost_usd": 0.009651,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "83381efe-fb73-4868-aace-5f1112780683",
+   "run_id": "00a6510a-df04-e35f-9dc9-d8057868ee00",
+   "parent_span_id": "3b0d5781-a1ae-4853-95d8-3ecebdd50295",
+   "seq": 4,
+   "type": "tool_call",
+   "name": "get_financial_facts",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-08T13:11:23.873669Z",
+   "ended_at": "2026-10-08T13:11:24.750228Z",
+   "latency_ms": 876,
+   "input": {
+    "cik": "0009990002",
+    "concept": "OperatingIncomeLoss",
+    "period_type": "annual"
+   },
+   "output": {
+    "content": "[{\"start\": \"2021-01-01\", \"end\": \"2021-12-31\", \"value\": 1180000000.0, \"unit\": \"USD\", \"accession\": \"9990202021-21-000001\", \"form\": \"10-K\", \"filed\": \"2022-02-15\", \"reported_in_fy\": 2021, \"reported_in_fp\": \"FY\"}, {\"start\": \"2022-01-01\", \"end\": \"2022-12-31\", \"value\": 1260000000.0, \"unit\": \"USD\", \"accession\": \"9990202022-22-000001\", \"form\": \"10-K\", \"filed\": \"2023-02-15\", \"reported_in_fy\": 2022, \"reported_in_fp\": \"FY\"}, {\"start\": \"2023-01-01\", \"end\": \"2023-12-31\", \"value\": 1010000000.0, \"unit\": \"USD\", \"accession\": \"9990202023-23-000001\", \"form\": \"10-K\", \"filed\": \"2024-02-15\", \"reported_in_fy\": 2023, \"reported_in_fp\": \"FY\"}]"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_2"
+   }
+  },
+  {
+   "id": "8b5d8f4e-0f28-4555-8f70-405dd3726406",
+   "run_id": "00a6510a-df04-e35f-9dc9-d8057868ee00",
+   "parent_span_id": "3b0d5781-a1ae-4853-95d8-3ecebdd50295",
+   "seq": 5,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-08T13:11:24.750228Z",
+   "ended_at": "2026-10-08T13:11:26.251075Z",
+   "latency_ms": 1500,
+   "input": {
+    "n_messages": 5,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_2",
+        "name": "get_financial_facts",
+        "arguments": {
+         "cik": "0009990002",
+         "concept": "OperatingIncomeLoss",
+         "period_type": "annual"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_2",
+        "is_error": false,
+        "content_chars": 624,
+        "content": "[{\"start\": \"2021-01-01\", \"end\": \"2021-12-31\", \"value\": 1180000000.0, \"unit\": \"USD\", \"accession\": \"9990202021-21-000001\", \"form\": \"10-K\", \"filed\": \"2022-02-15\", \"reported_in_fy\": 2021, \"reported_in_fp\": \"FY\"}, {\"start\": \"2022-01-01\", \"end\": \"2022-12-31\", \"value\": 1260000000.0, \"unit\": \"USD\", \"accession\": \"9990202022-22-000001\", \"form\": \"10-K\", \"filed\": \"2023-02-15\", \"reported_in_fy\": 2022, \"reported_in_fp\": \"FY\"}, {\"start\": \"2023-01-01\", \"end\": \"2023-12-31\", \"value\": 1010000000.0, \"unit\": \"USD\", \"accession\": \"9990202023-23-000001\", \"form\": \"10-K\", \"filed\": \"2024-02-15\", \"reported_in_fy\": 2023, \"reported_in_fp\": \"FY\"}]"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_3_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 1260.0,
+       "unit": "USD_millions",
+       "period": "FY2022",
+       "text": "Globex Industries: 1,260.00 (USD_millions).",
+       "citations": [
+        {
+         "accession": "9990202022-22-000001",
+         "concept": "us-gaap:OperatingIncomeLoss"
+        }
+       ]
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 3457,
+   "output_tokens": 128,
+   "cost_usd": 0.012291,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "3b0d5781-a1ae-4853-95d8-3ecebdd50295",
+   "run_id": "00a6510a-df04-e35f-9dc9-d8057868ee00",
+   "parent_span_id": null,
+   "seq": 6,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-08T13:11:20Z",
+   "ended_at": "2026-10-08T13:11:26.251075Z",
+   "latency_ms": 6251,
+   "input": {
+    "question": "What was Globex Industries's operating income for fiscal year 2022?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 1260.0,
+     "unit": "USD_millions",
+     "period": "FY2022",
+     "text": "Globex Industries: 1,260.00 (USD_millions).",
+     "citations": [
+      {
+       "accession": "9990202022-22-000001",
+       "section": null,
+       "concept": "us-gaap:OperatingIncomeLoss"
+      }
+     ]
+    }
+   },
+   "error": null,
+   "input_tokens": 7449,
+   "output_tokens": 430,
+   "cost_usd": 0.028797,
+   "attributes": {
+    "steps": 3,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

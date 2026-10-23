@@ -1,0 +1,113 @@
+{
+ "id": "b0b0d438-b724-cb57-4fe4-732edf4bbe4f",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "Between Acme Corp and Globex Industries, which had the higher operating margin in fiscal 2023?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": null,
+  "unit": null,
+  "period": null,
+  "text": "Acme Corp (15.1% vs 11.0%)",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1671,
+  "output_tokens": 151,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.007278,
+  "latency_ms": 2185,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:34:39.880000Z",
+ "started_at": "2026-10-12T13:34:40Z",
+ "finished_at": "2026-10-12T13:34:42.185797Z",
+ "spans": [
+  {
+   "id": "9cfcdc38-49e8-4b64-9899-f8cc8e16dbab",
+   "run_id": "b0b0d438-b724-cb57-4fe4-732edf4bbe4f",
+   "parent_span_id": "2e6bb4c5-ad80-4407-9eaf-c094ab01a917",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:34:40Z",
+   "ended_at": "2026-10-12T13:34:42.185797Z",
+   "latency_ms": 2185,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "Between Acme Corp and Globex Industries, which had the higher operating margin in fiscal 2023?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "text": "Acme Corp (15.1% vs 11.0%)",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1671,
+   "output_tokens": 151,
+   "cost_usd": 0.007278,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "2e6bb4c5-ad80-4407-9eaf-c094ab01a917",
+   "run_id": "b0b0d438-b724-cb57-4fe4-732edf4bbe4f",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:34:40Z",
+   "ended_at": "2026-10-12T13:34:42.185797Z",
+   "latency_ms": 2185,
+   "input": {
+    "question": "Between Acme Corp and Globex Industries, which had the higher operating margin in fiscal 2023?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": null,
+     "unit": null,
+     "period": null,
+     "text": "Acme Corp (15.1% vs 11.0%)",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1671,
+   "output_tokens": 151,
+   "cost_usd": 0.007278,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

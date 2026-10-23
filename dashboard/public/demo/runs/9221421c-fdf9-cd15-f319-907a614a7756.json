@@ -1,0 +1,334 @@
+{
+ "id": "9221421c-fdf9-cd15-f319-907a614a7756",
+ "config_id": "1e09a7dc-94ca-5797-90e6-b432b96fea35",
+ "eval_run_id": "e3d0a31f-35c5-53a8-abff-17c45673bb16",
+ "source": "eval",
+ "question": "What was Globex Industries's net income for fiscal year 2023?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 722.0,
+  "unit": "USD_millions",
+  "period": "FY2023",
+  "text": "Globex Industries: 722.00 (USD_millions).",
+  "citations": [
+   {
+    "accession": "9990202023-23-000001",
+    "section": null,
+    "concept": "us-gaap:NetIncomeLoss"
+   }
+  ]
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 7604,
+  "output_tokens": 449,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.029547,
+  "latency_ms": 7136,
+  "step_count": 3,
+  "tool_call_count": 2
+ },
+ "created_at": "2026-10-08T13:11:59.880000Z",
+ "started_at": "2026-10-08T13:12:00Z",
+ "finished_at": "2026-10-08T13:12:07.136980Z",
+ "spans": [
+  {
+   "id": "67d97229-33d7-400e-883f-60a1c68f888c",
+   "run_id": "9221421c-fdf9-cd15-f319-907a614a7756",
+   "parent_span_id": "3d35b0eb-88d1-4e16-96a1-173f6d4a29ff",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-08T13:12:00Z",
+   "ended_at": "2026-10-08T13:12:02.212024Z",
+   "latency_ms": 2212,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Globex Industries's net income for fiscal year 2023?"
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1",
+      "name": "resolve_company",
+      "arguments": {
+       "query": "Globex Industries"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1473,
+   "output_tokens": 112,
+   "cost_usd": 0.006099,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "88afb389-155f-4c3c-9844-556cae1697a6",
+   "run_id": "9221421c-fdf9-cd15-f319-907a614a7756",
+   "parent_span_id": "3d35b0eb-88d1-4e16-96a1-173f6d4a29ff",
+   "seq": 2,
+   "type": "tool_call",
+   "name": "resolve_company",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-08T13:12:02.212024Z",
+   "ended_at": "2026-10-08T13:12:02.595458Z",
+   "latency_ms": 383,
+   "input": {
+    "query": "Globex Industries"
+   },
+   "output": {
+    "content": "[{\"cik\": \"0009990002\", \"name\": \"Globex Industries\"}]"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_1"
+   }
+  },
+  {
+   "id": "73a2b85a-4f38-49c4-b342-cdf979b8d7d9",
+   "run_id": "9221421c-fdf9-cd15-f319-907a614a7756",
+   "parent_span_id": "3d35b0eb-88d1-4e16-96a1-173f6d4a29ff",
+   "seq": 3,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-08T13:12:02.595458Z",
+   "ended_at": "2026-10-08T13:12:03.993320Z",
+   "latency_ms": 1397,
+   "input": {
+    "n_messages": 3,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_1",
+        "name": "resolve_company",
+        "arguments": {
+         "query": "Globex Industries"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_1",
+        "is_error": false,
+        "content_chars": 52,
+        "content": "[{\"cik\": \"0009990002\", \"name\": \"Globex Industries\"}]"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_2",
+      "name": "get_financial_facts",
+      "arguments": {
+       "cik": "0009990002",
+       "concept": "NetIncomeLoss",
+       "period_type": "annual"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 2559,
+   "output_tokens": 220,
+   "cost_usd": 0.010977,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "3e8296a7-76e2-4f9a-bb25-8bd927d7eeba",
+   "run_id": "9221421c-fdf9-cd15-f319-907a614a7756",
+   "parent_span_id": "3d35b0eb-88d1-4e16-96a1-173f6d4a29ff",
+   "seq": 4,
+   "type": "tool_call",
+   "name": "get_financial_facts",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-08T13:12:03.993320Z",
+   "ended_at": "2026-10-08T13:12:05.190321Z",
+   "latency_ms": 1197,
+   "input": {
+    "cik": "0009990002",
+    "concept": "NetIncomeLoss",
+    "period_type": "annual"
+   },
+   "output": {
+    "content": "[{\"start\": \"2021-01-01\", \"end\": \"2021-12-31\", \"value\": 840000000.0, \"unit\": \"USD\", \"accession\": \"9990202021-21-000001\", \"form\": \"10-K\", \"filed\": \"2022-02-15\", \"reported_in_fy\": 2021, \"reported_in_fp\": \"FY\"}, {\"start\": \"2022-01-01\", \"end\": \"2022-12-31\", \"value\": 905000000.0, \"unit\": \"USD\", \"accession\": \"9990202022-22-000001\", \"form\": \"10-K\", \"filed\": \"2023-02-15\", \"reported_in_fy\": 2022, \"reported_in_fp\": \"FY\"}, {\"start\": \"2023-01-01\", \"end\": \"2023-12-31\", \"value\": 722000000.0, \"unit\": \"USD\", \"accession\": \"9990202023-23-000001\", \"form\": \"10-K\", \"filed\": \"2024-02-15\", \"reported_in_fy\": 2023, \"reported_in_fp\": \"FY\"}]"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_2"
+   }
+  },
+  {
+   "id": "d6900ce3-1106-4358-9f66-3503dd9df007",
+   "run_id": "9221421c-fdf9-cd15-f319-907a614a7756",
+   "parent_span_id": "3d35b0eb-88d1-4e16-96a1-173f6d4a29ff",
+   "seq": 5,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-08T13:12:05.190321Z",
+   "ended_at": "2026-10-08T13:12:07.136980Z",
+   "latency_ms": 1946,
+   "input": {
+    "n_messages": 5,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_2",
+        "name": "get_financial_facts",
+        "arguments": {
+         "cik": "0009990002",
+         "concept": "NetIncomeLoss",
+         "period_type": "annual"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_2",
+        "is_error": false,
+        "content_chars": 621,
+        "content": "[{\"start\": \"2021-01-01\", \"end\": \"2021-12-31\", \"value\": 840000000.0, \"unit\": \"USD\", \"accession\": \"9990202021-21-000001\", \"form\": \"10-K\", \"filed\": \"2022-02-15\", \"reported_in_fy\": 2021, \"reported_in_fp\": \"FY\"}, {\"start\": \"2022-01-01\", \"end\": \"2022-12-31\", \"value\": 905000000.0, \"unit\": \"USD\", \"accession\": \"9990202022-22-000001\", \"form\": \"10-K\", \"filed\": \"2023-02-15\", \"reported_in_fy\": 2022, \"reported_in_fp\": \"FY\"}, {\"start\": \"2023-01-01\", \"end\": \"2023-12-31\", \"value\": 722000000.0, \"unit\": \"USD\", \"accession\": \"9990202023-23-000001\", \"form\": \"10-K\", \"filed\": \"2024-02-15\", \"reported_in_fy\": 2023, \"reported_in_fp\": \"FY\"}]"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_3_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 722.0,
+       "unit": "USD_millions",
+       "period": "FY2023",
+       "text": "Globex Industries: 722.00 (USD_millions).",
+       "citations": [
+        {
+         "accession": "9990202023-23-000001",
+         "concept": "us-gaap:NetIncomeLoss"
+        }
+       ]
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 3572,
+   "output_tokens": 117,
+   "cost_usd": 0.012471,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "3d35b0eb-88d1-4e16-96a1-173f6d4a29ff",
+   "run_id": "9221421c-fdf9-cd15-f319-907a614a7756",
+   "parent_span_id": null,
+   "seq": 6,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-08T13:12:00Z",
+   "ended_at": "2026-10-08T13:12:07.136980Z",
+   "latency_ms": 7136,
+   "input": {
+    "question": "What was Globex Industries's net income for fiscal year 2023?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 722.0,
+     "unit": "USD_millions",
+     "period": "FY2023",
+     "text": "Globex Industries: 722.00 (USD_millions).",
+     "citations": [
+      {
+       "accession": "9990202023-23-000001",
+       "section": null,
+       "concept": "us-gaap:NetIncomeLoss"
+      }
+     ]
+    }
+   },
+   "error": null,
+   "input_tokens": 7604,
+   "output_tokens": 449,
+   "cost_usd": 0.029547,
+   "attributes": {
+    "steps": 3,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

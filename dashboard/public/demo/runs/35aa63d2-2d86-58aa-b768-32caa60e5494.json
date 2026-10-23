@@ -1,0 +1,432 @@
+{
+ "id": "35aa63d2-2d86-58aa-b768-32caa60e5494",
+ "config_id": "d1e4f267-9d5c-5506-96eb-b0bd1751fda0",
+ "eval_run_id": "75fa7e5c-2c3c-5b7e-89a5-b4348edb82f7",
+ "source": "eval",
+ "question": "Which is Globex Industries' largest segment by revenue?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": null,
+  "unit": null,
+  "period": null,
+  "text": "Aerospace",
+  "citations": [
+   {
+    "accession": "9990202023-23-000001",
+    "section": "1",
+    "concept": null
+   }
+  ]
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 11775,
+  "output_tokens": 658,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.003766,
+  "latency_ms": 4686,
+  "step_count": 4,
+  "tool_call_count": 3
+ },
+ "created_at": "2026-10-10T13:32:39.880000Z",
+ "started_at": "2026-10-10T13:32:40Z",
+ "finished_at": "2026-10-10T13:32:44.686169Z",
+ "spans": [
+  {
+   "id": "06cb4517-d550-49e0-b673-db1462998163",
+   "run_id": "35aa63d2-2d86-58aa-b768-32caa60e5494",
+   "parent_span_id": "defc59d7-2a47-4ae2-bed8-b780e505428b",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:32:40Z",
+   "ended_at": "2026-10-10T13:32:40.725905Z",
+   "latency_ms": 725,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "Which is Globex Industries' largest segment by revenue?"
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1",
+      "name": "resolve_company",
+      "arguments": {
+       "query": "Globex Industries"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1611,
+   "output_tokens": 64,
+   "cost_usd": 0.00048275,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "8681d4cf-3416-4ff5-a7e9-5d50e1764db0",
+   "run_id": "35aa63d2-2d86-58aa-b768-32caa60e5494",
+   "parent_span_id": "defc59d7-2a47-4ae2-bed8-b780e505428b",
+   "seq": 2,
+   "type": "tool_call",
+   "name": "resolve_company",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:32:40.725905Z",
+   "ended_at": "2026-10-10T13:32:41.036517Z",
+   "latency_ms": 310,
+   "input": {
+    "query": "Globex Industries"
+   },
+   "output": {
+    "content": "[{\"cik\": \"0009990002\", \"name\": \"Globex Industries\"}]"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_1"
+   }
+  },
+  {
+   "id": "742d719b-541a-4279-905f-11e913d354b2",
+   "run_id": "35aa63d2-2d86-58aa-b768-32caa60e5494",
+   "parent_span_id": "defc59d7-2a47-4ae2-bed8-b780e505428b",
+   "seq": 3,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:32:41.036517Z",
+   "ended_at": "2026-10-10T13:32:41.692926Z",
+   "latency_ms": 656,
+   "input": {
+    "n_messages": 3,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_1",
+        "name": "resolve_company",
+        "arguments": {
+         "query": "Globex Industries"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_1",
+        "is_error": false,
+        "content_chars": 52,
+        "content": "[{\"cik\": \"0009990002\", \"name\": \"Globex Industries\"}]"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_2",
+      "name": "list_filings",
+      "arguments": {
+       "cik": "0009990002",
+       "form": "10-K"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 2518,
+   "output_tokens": 239,
+   "cost_usd": 0.00092825,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "7a340cba-6774-4a4f-b2f2-573fc838efda",
+   "run_id": "35aa63d2-2d86-58aa-b768-32caa60e5494",
+   "parent_span_id": "defc59d7-2a47-4ae2-bed8-b780e505428b",
+   "seq": 4,
+   "type": "tool_call",
+   "name": "list_filings",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:32:41.692926Z",
+   "ended_at": "2026-10-10T13:32:41.936028Z",
+   "latency_ms": 243,
+   "input": {
+    "cik": "0009990002",
+    "form": "10-K"
+   },
+   "output": {
+    "content": "[{\"accession\": \"9990202023-23-000001\", \"form\": \"10-K\", \"primary_document\": \"annual.htm\"}]"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_2"
+   }
+  },
+  {
+   "id": "062cf1a6-ee6d-4301-9be9-aaf3e8c3ab15",
+   "run_id": "35aa63d2-2d86-58aa-b768-32caa60e5494",
+   "parent_span_id": "defc59d7-2a47-4ae2-bed8-b780e505428b",
+   "seq": 5,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:32:41.936028Z",
+   "ended_at": "2026-10-10T13:32:42.480716Z",
+   "latency_ms": 544,
+   "input": {
+    "n_messages": 5,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_2",
+        "name": "list_filings",
+        "arguments": {
+         "cik": "0009990002",
+         "form": "10-K"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_2",
+        "is_error": false,
+        "content_chars": 89,
+        "content": "[{\"accession\": \"9990202023-23-000001\", \"form\": \"10-K\", \"primary_document\": \"annual.htm\"}]"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_3",
+      "name": "get_filing_section",
+      "arguments": {
+       "cik": "0009990002",
+       "accession": "9990202023-23-000001",
+       "item": "1",
+       "primary_document": "annual.htm"
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 3309,
+   "output_tokens": 220,
+   "cost_usd": 0.00110225,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "0fafaf32-442e-422f-be65-ef53233ffec4",
+   "run_id": "35aa63d2-2d86-58aa-b768-32caa60e5494",
+   "parent_span_id": "defc59d7-2a47-4ae2-bed8-b780e505428b",
+   "seq": 6,
+   "type": "tool_call",
+   "name": "get_filing_section",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:32:42.480716Z",
+   "ended_at": "2026-10-10T13:32:44.079753Z",
+   "latency_ms": 1599,
+   "input": {
+    "cik": "0009990002",
+    "accession": "9990202023-23-000001",
+    "item": "1",
+    "primary_document": "annual.htm"
+   },
+   "output": {
+    "content": "{\"item\": \"1\", \"untrusted_text\": \"Globex Industries operates through the following reportable segments: Aerospace, Energy. The Aerospace segment is the largest by revenue.\"}"
+   },
+   "error": null,
+   "input_tokens": null,
+   "output_tokens": null,
+   "cost_usd": null,
+   "attributes": {
+    "tool_call_id": "call_3"
+   }
+  },
+  {
+   "id": "6a0b56bf-c806-4cd7-a9e6-c2f49a208731",
+   "run_id": "35aa63d2-2d86-58aa-b768-32caa60e5494",
+   "parent_span_id": "defc59d7-2a47-4ae2-bed8-b780e505428b",
+   "seq": 7,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:32:44.079753Z",
+   "ended_at": "2026-10-10T13:32:44.686169Z",
+   "latency_ms": 606,
+   "input": {
+    "n_messages": 7,
+    "new_messages": [
+     {
+      "role": "assistant",
+      "tool_calls": [
+       {
+        "id": "call_3",
+        "name": "get_filing_section",
+        "arguments": {
+         "cik": "0009990002",
+         "accession": "9990202023-23-000001",
+         "item": "1",
+         "primary_document": "annual.htm"
+        }
+       }
+      ]
+     },
+     {
+      "role": "tool",
+      "tool_results": [
+       {
+        "tool_call_id": "call_3",
+        "is_error": false,
+        "content_chars": 172,
+        "content": "{\"item\": \"1\", \"untrusted_text\": \"Globex Industries operates through the following reportable segments: Aerospace, Energy. The Aerospace segment is the largest by revenue.\"}"
+       }
+      ]
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_4_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "text": "Aerospace",
+       "citations": [
+        {
+         "accession": "9990202023-23-000001",
+         "section": "1"
+        }
+       ]
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 4337,
+   "output_tokens": 135,
+   "cost_usd": 0.001253,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "defc59d7-2a47-4ae2-bed8-b780e505428b",
+   "run_id": "35aa63d2-2d86-58aa-b768-32caa60e5494",
+   "parent_span_id": null,
+   "seq": 8,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:32:40Z",
+   "ended_at": "2026-10-10T13:32:44.686169Z",
+   "latency_ms": 4686,
+   "input": {
+    "question": "Which is Globex Industries' largest segment by revenue?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": null,
+     "unit": null,
+     "period": null,
+     "text": "Aerospace",
+     "citations": [
+      {
+       "accession": "9990202023-23-000001",
+       "section": "1",
+       "concept": null
+      }
+     ]
+    }
+   },
+   "error": null,
+   "input_tokens": 11775,
+   "output_tokens": 658,
+   "cost_usd": 0.0037662499999999996,
+   "attributes": {
+    "steps": 4,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

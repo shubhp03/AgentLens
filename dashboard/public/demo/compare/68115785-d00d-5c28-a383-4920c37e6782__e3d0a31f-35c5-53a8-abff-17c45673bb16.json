@@ -1,0 +1,80 @@
+{
+ "n": 24,
+ "base_pass_rate": 0.2916666666666667,
+ "candidate_pass_rate": 0.8333333333333334,
+ "base_ci": [
+  0.14914460334164278,
+  0.49168063658709704
+ ],
+ "candidate_ci": [
+  0.6414652961213058,
+  0.9332143199927109
+ ],
+ "delta": 0.5416666666666666,
+ "base_only": 1,
+ "candidate_only": 14,
+ "p_value": 0.0009765625,
+ "regression": false,
+ "flipped_cases": [
+  {
+   "case_key": "calc-acme-netmargin-fy22",
+   "direction": "improved"
+  },
+  {
+   "case_key": "calc-acme-opmargin-fy23",
+   "direction": "improved"
+  },
+  {
+   "case_key": "calc-acme-revgrowth-fy23",
+   "direction": "improved"
+  },
+  {
+   "case_key": "calc-globex-opmargin-fy23",
+   "direction": "improved"
+  },
+  {
+   "case_key": "calc-globex-revgrowth-fy23",
+   "direction": "improved"
+  },
+  {
+   "case_key": "lookup-acme-netincome-fy2022",
+   "direction": "improved"
+  },
+  {
+   "case_key": "lookup-acme-opincome-fy2023",
+   "direction": "improved"
+  },
+  {
+   "case_key": "lookup-acme-revenue-fy2022",
+   "direction": "improved"
+  },
+  {
+   "case_key": "lookup-globex-netincome-fy2023",
+   "direction": "improved"
+  },
+  {
+   "case_key": "lookup-globex-opincome-fy2022",
+   "direction": "improved"
+  },
+  {
+   "case_key": "lookup-globex-revenue-fy2021",
+   "direction": "improved"
+  },
+  {
+   "case_key": "lookup-globex-revenue-fy2023",
+   "direction": "improved"
+  },
+  {
+   "case_key": "multi-combined-revenue-fy23",
+   "direction": "improved"
+  },
+  {
+   "case_key": "multi-higher-opmargin-fy23",
+   "direction": "regressed"
+  },
+  {
+   "case_key": "text-acme-segments",
+   "direction": "improved"
+  }
+ ]
+}

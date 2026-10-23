@@ -1,0 +1,24 @@
+# Single-VM deployment of the DEMO site (synthetic data) behind automatic HTTPS.
+#   cd deploy && DOMAIN=agentlens.example.com docker compose -f docker-compose.prod.yml up -d --build
+# UNTESTED with a real Docker daemon; `docker compose config` validates the syntax.
+# Full stack instead of the demo site: use docker-compose.fullstack.yml (see docs/DEPLOY.md option C).
+name: agentlens-prod
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment: {DOMAIN: "${DOMAIN:?set DOMAIN, e.g. agentlens.example.com}"}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [dashboard]
+  dashboard:
+    build: ../dashboard
+    restart: unless-stopped
+    environment: {DEMO: "true", API_BASE_URL: ""}
+    expose: ["80"]
+volumes:
+  caddy_data:
+  caddy_config:

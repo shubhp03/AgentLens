@@ -1,0 +1,116 @@
+{
+ "id": "34f8f0c6-ff98-7321-8191-d5f60ca0e06a",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Acme Corp's total revenue for fiscal year 2023?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 5310.0,
+  "unit": "USD_millions",
+  "period": "FY2023",
+  "text": "Acme Corp: 5,310.00 (USD_millions).",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1697,
+  "output_tokens": 209,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.008226,
+  "latency_ms": 2891,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:01:19.880000Z",
+ "started_at": "2026-10-12T13:01:20Z",
+ "finished_at": "2026-10-12T13:01:22.891840Z",
+ "spans": [
+  {
+   "id": "018762e1-393b-4dda-8a31-03e74c2f14dc",
+   "run_id": "34f8f0c6-ff98-7321-8191-d5f60ca0e06a",
+   "parent_span_id": "27a0522c-d11f-4f2b-b4e1-65b8fbe46d44",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:01:20Z",
+   "ended_at": "2026-10-12T13:01:22.891840Z",
+   "latency_ms": 2891,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Acme Corp's total revenue for fiscal year 2023?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 5310.0,
+       "unit": "USD_millions",
+       "period": "FY2023",
+       "text": "Acme Corp: 5,310.00 (USD_millions).",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1697,
+   "output_tokens": 209,
+   "cost_usd": 0.008226,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "27a0522c-d11f-4f2b-b4e1-65b8fbe46d44",
+   "run_id": "34f8f0c6-ff98-7321-8191-d5f60ca0e06a",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:01:20Z",
+   "ended_at": "2026-10-12T13:01:22.891840Z",
+   "latency_ms": 2891,
+   "input": {
+    "question": "What was Acme Corp's total revenue for fiscal year 2023?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 5310.0,
+     "unit": "USD_millions",
+     "period": "FY2023",
+     "text": "Acme Corp: 5,310.00 (USD_millions).",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1697,
+   "output_tokens": 209,
+   "cost_usd": 0.008226,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

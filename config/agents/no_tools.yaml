@@ -1,0 +1,10 @@
+# Control arm: how much of the benchmark is answerable from model memory alone?
+# Public filings are in pretraining data; without this arm you cannot separate tool value from recall.
+name: no-tools
+provider: anthropic
+model: claude-sonnet-5-5
+system_prompt_id: system_v1
+temperature: 0.0
+max_steps: 3
+max_cost_usd: 0.10
+tool_allowlist: []

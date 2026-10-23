@@ -1,0 +1,113 @@
+{
+ "id": "4e22f169-b5f3-d93c-1f36-e8aee054ec15",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "Which is Globex Industries' largest segment by revenue?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": null,
+  "unit": null,
+  "period": null,
+  "text": "Aerospace",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1557,
+  "output_tokens": 201,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.007686,
+  "latency_ms": 2390,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:31:59.880000Z",
+ "started_at": "2026-10-12T13:32:00Z",
+ "finished_at": "2026-10-12T13:32:02.390642Z",
+ "spans": [
+  {
+   "id": "4a0dcc0a-a04f-4cdb-a261-3749c6ddf600",
+   "run_id": "4e22f169-b5f3-d93c-1f36-e8aee054ec15",
+   "parent_span_id": "c68a7219-cf1d-4c40-9209-d7b9c09a1e71",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:32:00Z",
+   "ended_at": "2026-10-12T13:32:02.390642Z",
+   "latency_ms": 2390,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "Which is Globex Industries' largest segment by revenue?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "text": "Aerospace",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1557,
+   "output_tokens": 201,
+   "cost_usd": 0.007686,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "c68a7219-cf1d-4c40-9209-d7b9c09a1e71",
+   "run_id": "4e22f169-b5f3-d93c-1f36-e8aee054ec15",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:32:00Z",
+   "ended_at": "2026-10-12T13:32:02.390642Z",
+   "latency_ms": 2390,
+   "input": {
+    "question": "Which is Globex Industries' largest segment by revenue?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": null,
+     "unit": null,
+     "period": null,
+     "text": "Aerospace",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1557,
+   "output_tokens": 201,
+   "cost_usd": 0.007686,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

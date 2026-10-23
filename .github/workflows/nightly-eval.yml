@@ -1,0 +1,45 @@
+# Live eval against the VERIFIED golden cases. Costs real money: hard-capped by --budget-usd; scheduled/manual only.
+# PR CI never calls live models (it uses unit tests + scripted fake LLMs).
+# Direct mode: the eval CLI runs the agent in-process and spawns the MCP tool servers over stdio. No gateway/DB/Docker.
+#
+# Required repository secrets:
+#   ANTHROPIC_API_KEY   your key
+#   SEC_USER_AGENT      "Your Name you@example.com"  (SEC fair-access policy)
+#   PRICING_YAML        full contents of config/pricing.yaml (filled from the provider pricing page, with as_of)
+name: nightly-eval
+on:
+  schedule: [{cron: "0 7 * * *"}]
+  workflow_dispatch:
+    inputs:
+      config: {description: "agent config name (file in config/agents/)", default: "baseline"}
+      budget_usd: {description: "hard spend cap in USD", default: "15"}
+      min_pass_rate: {description: "absolute pass-rate floor for the gate (0-1)", default: "0.5"}
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    # A scheduled run on a repo without the secrets would just fail noisily; skip it instead.
+    if: ${{ vars.NIGHTLY_EVAL_ENABLED == 'true' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --all-packages
+      - name: Write pricing file from secret
+        run: umask 077 && printf '%s\n' "$PRICING_YAML" > config/pricing.yaml
+        env: {PRICING_YAML: "${{ secrets.PRICING_YAML }}"}
+      - name: Run eval + regression gate
+        run: |
+          BASELINE=""
+          if [ -f evals/baselines/baseline.results.jsonl ]; then BASELINE="--baseline evals/baselines/baseline.results.jsonl"; fi
+          uv run agentlens-eval run \
+            --dataset evals/datasets/golden_v0.jsonl \
+            --config "config/agents/${{ inputs.config || 'baseline' }}.yaml" \
+            --repeats 3 --budget-usd "${{ inputs.budget_usd || '15' }}" \
+            --label nightly --out evals/out/nightly --verified-only \
+            --gate --min-pass-rate "${{ inputs.min_pass_rate || '0.5' }}" $BASELINE
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: eval-out, path: evals/out/}

@@ -1,0 +1,29 @@
+# FULL stack on one VM behind Caddy (HTTPS). Overlay on the root compose file:
+#   cp .env.example .env   # set SEC_USER_AGENT, ANTHROPIC_API_KEY, ADMIN_API_KEY, POSTGRES_PASSWORD, ALLOWED_ORIGINS=https://$DOMAIN
+#   DOMAIN=agentlens.example.com docker compose -f docker-compose.yml -f deploy/docker-compose.fullstack.yml up -d --build
+# Only Caddy is exposed. Postgres, agent, MCP servers and the gateway stay on the private compose network.
+# Validated with `docker compose config`; NEVER run with a real Docker daemon in the authoring sandbox.
+# Requires Docker Compose >= 2.24 (uses !reset).
+name: agentlens
+services:
+  postgres:
+    ports: !reset []
+  gateway:
+    ports: !reset []
+  dashboard:
+    ports: !reset []
+    environment: {DEMO: "false", API_BASE_URL: ""}
+    expose: ["80"]
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment: {DOMAIN: "${DOMAIN:?set DOMAIN, e.g. agentlens.example.com}"}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [dashboard, gateway]
+volumes:
+  caddy_data:
+  caddy_config:

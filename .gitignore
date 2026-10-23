@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.env
+.cache/
+config/pricing.yaml
+gateway/target/
+dashboard/node_modules/
+dashboard/dist/
+dashboard/.angular/
+evals/out/
+*.log
+.DS_Store
+.venv-db/
+eval-runs/

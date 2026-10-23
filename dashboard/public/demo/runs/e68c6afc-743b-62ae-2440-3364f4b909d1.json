@@ -1,0 +1,120 @@
+{
+ "id": "e68c6afc-743b-62ae-2440-3364f4b909d1",
+ "config_id": "d1e4f267-9d5c-5506-96eb-b0bd1751fda0",
+ "eval_run_id": "75fa7e5c-2c3c-5b7e-89a5-b4348edb82f7",
+ "source": "eval",
+ "question": "How many people does Acme Corp plan to hire next year?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 8.1,
+  "unit": "USD",
+  "period": null,
+  "text": "Estimated from trend.",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1441,
+  "output_tokens": 131,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.000524,
+  "latency_ms": 1273,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-10T13:45:59.880000Z",
+ "started_at": "2026-10-10T13:46:00Z",
+ "finished_at": "2026-10-10T13:46:01.273225Z",
+ "spans": [
+  {
+   "id": "5c8a9a43-a7df-42bd-b978-7b17967e1e3f",
+   "run_id": "e68c6afc-743b-62ae-2440-3364f4b909d1",
+   "parent_span_id": "c92fad74-3b99-4bdb-bb86-6e8a936d4907",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-small",
+   "status": "ok",
+   "model": "demo-model-small",
+   "started_at": "2026-10-10T13:46:00Z",
+   "ended_at": "2026-10-10T13:46:01.273225Z",
+   "latency_ms": 1273,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "How many people does Acme Corp plan to hire next year?"
+     }
+    ],
+    "tools": [
+     "resolve_company",
+     "list_filings",
+     "get_financial_facts",
+     "get_filing_section",
+     "calculate",
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 8.1,
+       "unit": "USD",
+       "text": "Estimated from trend.",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1441,
+   "output_tokens": 131,
+   "cost_usd": 0.000524,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "c92fad74-3b99-4bdb-bb86-6e8a936d4907",
+   "run_id": "e68c6afc-743b-62ae-2440-3364f4b909d1",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-10T13:46:00Z",
+   "ended_at": "2026-10-10T13:46:01.273225Z",
+   "latency_ms": 1273,
+   "input": {
+    "question": "How many people does Acme Corp plan to hire next year?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 8.1,
+     "unit": "USD",
+     "period": null,
+     "text": "Estimated from trend.",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1441,
+   "output_tokens": 131,
+   "cost_usd": 0.000524,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

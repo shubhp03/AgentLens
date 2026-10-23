@@ -1,0 +1,116 @@
+{
+ "id": "ccea5be8-f751-a358-6cf7-a1c2c20ae13e",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was the combined fiscal 2023 revenue of Acme Corp and Globex Industries?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 17283.85,
+  "unit": "USD_millions",
+  "period": "FY2023",
+  "text": "Acme Corp: 14,515.00 (USD_millions).",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1650,
+  "output_tokens": 74,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.00606,
+  "latency_ms": 2777,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:38:39.880000Z",
+ "started_at": "2026-10-12T13:38:40Z",
+ "finished_at": "2026-10-12T13:38:42.777975Z",
+ "spans": [
+  {
+   "id": "7592bb00-3f1d-4763-ab80-a814ec01f2e9",
+   "run_id": "ccea5be8-f751-a358-6cf7-a1c2c20ae13e",
+   "parent_span_id": "95d66504-9a15-4c98-96cd-9e26a4f5e6ca",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:38:40Z",
+   "ended_at": "2026-10-12T13:38:42.777975Z",
+   "latency_ms": 2777,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was the combined fiscal 2023 revenue of Acme Corp and Globex Industries?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 17283.85,
+       "unit": "USD_millions",
+       "period": "FY2023",
+       "text": "Acme Corp: 14,515.00 (USD_millions).",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1650,
+   "output_tokens": 74,
+   "cost_usd": 0.00606,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "95d66504-9a15-4c98-96cd-9e26a4f5e6ca",
+   "run_id": "ccea5be8-f751-a358-6cf7-a1c2c20ae13e",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:38:40Z",
+   "ended_at": "2026-10-12T13:38:42.777975Z",
+   "latency_ms": 2777,
+   "input": {
+    "question": "What was the combined fiscal 2023 revenue of Acme Corp and Globex Industries?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 17283.85,
+     "unit": "USD_millions",
+     "period": "FY2023",
+     "text": "Acme Corp: 14,515.00 (USD_millions).",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1650,
+   "output_tokens": 74,
+   "cost_usd": 0.00606,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

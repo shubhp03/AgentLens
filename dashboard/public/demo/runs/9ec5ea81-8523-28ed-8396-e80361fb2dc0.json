@@ -1,0 +1,116 @@
+{
+ "id": "9ec5ea81-8523-28ed-8396-e80361fb2dc0",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Acme Corp's net margin in fiscal 2022?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 23.64,
+  "unit": "percent",
+  "period": "FY2022",
+  "text": "Acme Corp: 10.62 (percent).",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1529,
+  "output_tokens": 132,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.006567,
+  "latency_ms": 1069,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:24:39.880000Z",
+ "started_at": "2026-10-12T13:24:40Z",
+ "finished_at": "2026-10-12T13:24:41.069481Z",
+ "spans": [
+  {
+   "id": "931e0609-c95e-4ee3-abdd-19ff30470424",
+   "run_id": "9ec5ea81-8523-28ed-8396-e80361fb2dc0",
+   "parent_span_id": "b16a23c2-6617-40f2-a8bb-9714f94e5929",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:24:40Z",
+   "ended_at": "2026-10-12T13:24:41.069481Z",
+   "latency_ms": 1069,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Acme Corp's net margin in fiscal 2022?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 23.64,
+       "unit": "percent",
+       "period": "FY2022",
+       "text": "Acme Corp: 10.62 (percent).",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1529,
+   "output_tokens": 132,
+   "cost_usd": 0.006567,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "b16a23c2-6617-40f2-a8bb-9714f94e5929",
+   "run_id": "9ec5ea81-8523-28ed-8396-e80361fb2dc0",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:24:40Z",
+   "ended_at": "2026-10-12T13:24:41.069481Z",
+   "latency_ms": 1069,
+   "input": {
+    "question": "What was Acme Corp's net margin in fiscal 2022?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 23.64,
+     "unit": "percent",
+     "period": "FY2022",
+     "text": "Acme Corp: 10.62 (percent).",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1529,
+   "output_tokens": 132,
+   "cost_usd": 0.006567,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

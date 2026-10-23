@@ -1,0 +1,219 @@
+{
+  "$defs": {
+    "Expected": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "numeric",
+            "text",
+            "abstain"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        },
+        "rel_tolerance": {
+          "default": 0.005,
+          "minimum": 0,
+          "title": "Rel Tolerance",
+          "type": "number"
+        },
+        "must_contain": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Must Contain",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Expected",
+      "type": "object"
+    },
+    "Provenance": {
+      "properties": {
+        "source": {
+          "description": "Where the gold answer came from (URL / accession / XBRL)",
+          "title": "Source",
+          "type": "string"
+        },
+        "accession": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Accession"
+        },
+        "xbrl_concept": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Xbrl Concept"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
+        },
+        "verified_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verified By"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "case_key": {
+      "pattern": "^[a-z0-9][a-z0-9_\\-]{2,63}$",
+      "title": "Case Key",
+      "type": "string"
+    },
+    "question": {
+      "title": "Question",
+      "type": "string"
+    },
+    "category": {
+      "enum": [
+        "lookup",
+        "calc",
+        "text_extract",
+        "multi_hop",
+        "unanswerable"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "difficulty": {
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ],
+      "title": "Difficulty",
+      "type": "string"
+    },
+    "expected": {
+      "$ref": "#/$defs/Expected"
+    },
+    "required_tools": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Tools",
+      "type": "array"
+    },
+    "provenance": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Provenance"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "status": {
+      "default": "draft",
+      "enum": [
+        "draft",
+        "verified"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "split": {
+      "default": "dev",
+      "enum": [
+        "dev",
+        "test"
+      ],
+      "title": "Split",
+      "type": "string"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "array"
+    }
+  },
+  "required": [
+    "case_key",
+    "question",
+    "category",
+    "difficulty",
+    "expected"
+  ],
+  "title": "EvalCase",
+  "type": "object"
+}

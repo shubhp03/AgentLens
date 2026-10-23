@@ -1,0 +1,64 @@
+{
+ "n": 24,
+ "base_pass_rate": 0.5833333333333334,
+ "candidate_pass_rate": 0.2916666666666667,
+ "base_ci": [
+  0.3883433764938864,
+  0.7553265275346177
+ ],
+ "candidate_ci": [
+  0.14914460334164278,
+  0.49168063658709704
+ ],
+ "delta": -0.2916666666666667,
+ "base_only": 9,
+ "candidate_only": 2,
+ "p_value": 0.0654296875,
+ "regression": false,
+ "flipped_cases": [
+  {
+   "case_key": "calc-acme-opmargin-fy23",
+   "direction": "regressed"
+  },
+  {
+   "case_key": "calc-acme-revgrowth-fy23",
+   "direction": "regressed"
+  },
+  {
+   "case_key": "calc-globex-revgrowth-fy23",
+   "direction": "regressed"
+  },
+  {
+   "case_key": "lookup-acme-netincome-fy2022",
+   "direction": "regressed"
+  },
+  {
+   "case_key": "lookup-acme-opincome-fy2023",
+   "direction": "regressed"
+  },
+  {
+   "case_key": "lookup-acme-revenue-fy2022",
+   "direction": "regressed"
+  },
+  {
+   "case_key": "lookup-globex-netincome-fy2023",
+   "direction": "regressed"
+  },
+  {
+   "case_key": "lookup-globex-opincome-fy2022",
+   "direction": "regressed"
+  },
+  {
+   "case_key": "lookup-globex-revenue-fy2021",
+   "direction": "regressed"
+  },
+  {
+   "case_key": "multi-higher-opmargin-fy23",
+   "direction": "improved"
+  },
+  {
+   "case_key": "unans-acme-headcount-plan",
+   "direction": "improved"
+  }
+ ]
+}

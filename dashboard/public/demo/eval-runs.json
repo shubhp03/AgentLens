@@ -1,0 +1,95 @@
+[
+ {
+  "id": "e3d0a31f-35c5-53a8-abff-17c45673bb16",
+  "dataset_id": "72f35bec-fb34-5925-b095-0fd18ca2852b",
+  "config_id": "1e09a7dc-94ca-5797-90e6-b432b96fea35",
+  "label": "baseline-large",
+  "trigger": "manual",
+  "git_sha": "d3m0c0de",
+  "repeats": 3,
+  "status": "completed",
+  "is_baseline": true,
+  "gate_passed": null,
+  "notes": "SYNTHETIC sample data",
+  "started_at": "2026-10-08T13:00:00Z",
+  "finished_at": "2026-10-08T13:48:00Z",
+  "metrics": {
+   "n_results": 72,
+   "n_cases": 24,
+   "n_cases_passed": 20,
+   "pass_rate": 0.8333,
+   "run_pass_rate": 0.8194,
+   "pass_rate_ci": [
+    0.6415,
+    0.9332
+   ],
+   "total_cost_usd": 2.871291,
+   "avg_cost_usd": 0.039879,
+   "cost_per_success_usd": 0.048666,
+   "p50_latency_ms": 8117,
+   "p95_latency_ms": 11537
+  }
+ },
+ {
+  "id": "75fa7e5c-2c3c-5b7e-89a5-b4348edb82f7",
+  "dataset_id": "72f35bec-fb34-5925-b095-0fd18ca2852b",
+  "config_id": "d1e4f267-9d5c-5506-96eb-b0bd1751fda0",
+  "label": "small-model",
+  "trigger": "manual",
+  "git_sha": "d3m0c0de",
+  "repeats": 3,
+  "status": "completed",
+  "is_baseline": false,
+  "gate_passed": null,
+  "notes": "SYNTHETIC sample data",
+  "started_at": "2026-10-10T13:00:00Z",
+  "finished_at": "2026-10-10T13:48:00Z",
+  "metrics": {
+   "n_results": 72,
+   "n_cases": 24,
+   "n_cases_passed": 14,
+   "pass_rate": 0.5833,
+   "run_pass_rate": 0.5278,
+   "pass_rate_ci": [
+    0.3883,
+    0.7553
+   ],
+   "total_cost_usd": 0.296557,
+   "avg_cost_usd": 0.004119,
+   "cost_per_success_usd": 0.007804,
+   "p50_latency_ms": 4460,
+   "p95_latency_ms": 14174
+  }
+ },
+ {
+  "id": "68115785-d00d-5c28-a383-4920c37e6782",
+  "dataset_id": "72f35bec-fb34-5925-b095-0fd18ca2852b",
+  "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+  "label": "no-tools",
+  "trigger": "manual",
+  "git_sha": "d3m0c0de",
+  "repeats": 3,
+  "status": "completed",
+  "is_baseline": false,
+  "gate_passed": null,
+  "notes": "SYNTHETIC sample data",
+  "started_at": "2026-10-12T13:00:00Z",
+  "finished_at": "2026-10-12T13:48:00Z",
+  "metrics": {
+   "n_results": 72,
+   "n_cases": 24,
+   "n_cases_passed": 7,
+   "pass_rate": 0.2917,
+   "run_pass_rate": 0.3056,
+   "pass_rate_ci": [
+    0.1491,
+    0.4917
+   ],
+   "total_cost_usd": 0.494409,
+   "avg_cost_usd": 0.006867,
+   "cost_per_success_usd": 0.022473,
+   "p50_latency_ms": 2062,
+   "p95_latency_ms": 2851
+  }
+ }
+]

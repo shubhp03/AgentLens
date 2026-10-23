@@ -1,0 +1,16 @@
+# Caddy obtains and renews TLS certificates automatically. Requirements: DOMAIN's DNS A/AAAA record points at this
+# server and ports 80+443 are open.
+{$DOMAIN} {
+	encode zstd gzip
+
+	# Full stack (docker-compose.fullstack.yml): same-origin API. The gateway already serves /api/v1/*, so do NOT strip the
+	# prefix (handle, not handle_path) and keep the dashboard's API_BASE_URL empty.
+	handle /api/* {
+		reverse_proxy {$API_UPSTREAM:gateway:8080} {
+			flush_interval -1   # do not buffer Server-Sent Events
+		}
+	}
+	handle {
+		reverse_proxy dashboard:80
+	}
+}

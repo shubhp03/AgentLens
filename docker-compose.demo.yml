@@ -1,0 +1,9 @@
+# The dashboard on synthetic demo data, in Docker. No backend, no API keys, no spend.
+#   docker compose -f docker-compose.demo.yml up --build      ->  http://localhost:4200
+# UNTESTED with a real Docker daemon (none available where this was authored); `docker compose config` validates it.
+name: agentlens-demo
+services:
+  dashboard:
+    build: ./dashboard
+    environment: {DEMO: "true", API_BASE_URL: ""}
+    ports: ["4200:80"]

@@ -1,0 +1,116 @@
+{
+ "id": "7bed97db-ae92-9c62-b8f3-511cccbb7cd3",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "By what percent did Globex Industries's revenue change from fiscal 2022 to fiscal 2023?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 7.55,
+  "unit": "percent",
+  "period": "FY2023",
+  "text": "Globex Industries: -2.90 (percent).",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1558,
+  "output_tokens": 153,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.006969,
+  "latency_ms": 1346,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:21:19.880000Z",
+ "started_at": "2026-10-12T13:21:20Z",
+ "finished_at": "2026-10-12T13:21:21.346301Z",
+ "spans": [
+  {
+   "id": "cc178251-edcc-45c9-b907-e09247398fbe",
+   "run_id": "7bed97db-ae92-9c62-b8f3-511cccbb7cd3",
+   "parent_span_id": "1eb38a87-504d-49e1-b9c2-fdd27c73cf72",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:21:20Z",
+   "ended_at": "2026-10-12T13:21:21.346301Z",
+   "latency_ms": 1346,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "By what percent did Globex Industries's revenue change from fiscal 2022 to fiscal 2023?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 7.55,
+       "unit": "percent",
+       "period": "FY2023",
+       "text": "Globex Industries: -2.90 (percent).",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1558,
+   "output_tokens": 153,
+   "cost_usd": 0.006969,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "1eb38a87-504d-49e1-b9c2-fdd27c73cf72",
+   "run_id": "7bed97db-ae92-9c62-b8f3-511cccbb7cd3",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:21:20Z",
+   "ended_at": "2026-10-12T13:21:21.346301Z",
+   "latency_ms": 1346,
+   "input": {
+    "question": "By what percent did Globex Industries's revenue change from fiscal 2022 to fiscal 2023?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 7.55,
+     "unit": "percent",
+     "period": "FY2023",
+     "text": "Globex Industries: -2.90 (percent).",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1558,
+   "output_tokens": 153,
+   "cost_usd": 0.006969,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

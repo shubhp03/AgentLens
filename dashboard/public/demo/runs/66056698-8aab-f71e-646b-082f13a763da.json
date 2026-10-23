@@ -1,0 +1,116 @@
+{
+ "id": "66056698-8aab-f71e-646b-082f13a763da",
+ "config_id": "b71cdafe-a7a5-5b32-b56a-b2f5a0a1b489",
+ "eval_run_id": "68115785-d00d-5c28-a383-4920c37e6782",
+ "source": "eval",
+ "question": "What was Acme Corp's operating margin (operating income / revenue) in fiscal 2023?",
+ "status": "completed",
+ "termination_reason": "answered",
+ "final_answer": {
+  "abstained": false,
+  "value": 28.95,
+  "unit": "percent",
+  "period": "FY2023",
+  "text": "Acme Corp: 15.08 (percent).",
+  "citations": []
+ },
+ "error": null,
+ "totals": {
+  "input_tokens": 1466,
+  "output_tokens": 229,
+  "cache_read_tokens": 0,
+  "cost_usd": 0.007833,
+  "latency_ms": 1202,
+  "step_count": 1,
+  "tool_call_count": 0
+ },
+ "created_at": "2026-10-12T13:19:19.880000Z",
+ "started_at": "2026-10-12T13:19:20Z",
+ "finished_at": "2026-10-12T13:19:21.202010Z",
+ "spans": [
+  {
+   "id": "ac3c2bee-30b6-427a-b281-63a5ee143055",
+   "run_id": "66056698-8aab-f71e-646b-082f13a763da",
+   "parent_span_id": "ae468b46-995d-420f-a076-332471d62d92",
+   "seq": 1,
+   "type": "llm_call",
+   "name": "demo-model-large",
+   "status": "ok",
+   "model": "demo-model-large",
+   "started_at": "2026-10-12T13:19:20Z",
+   "ended_at": "2026-10-12T13:19:21.202010Z",
+   "latency_ms": 1202,
+   "input": {
+    "n_messages": 1,
+    "new_messages": [
+     {
+      "role": "user",
+      "text": "What was Acme Corp's operating margin (operating income / revenue) in fiscal 2023?"
+     }
+    ],
+    "tools": [
+     "submit_answer"
+    ]
+   },
+   "output": {
+    "text": null,
+    "tool_calls": [
+     {
+      "id": "call_1_sub",
+      "name": "submit_answer",
+      "arguments": {
+       "value": 28.95,
+       "unit": "percent",
+       "period": "FY2023",
+       "text": "Acme Corp: 15.08 (percent).",
+       "citations": []
+      }
+     }
+    ],
+    "stop_reason": "end_turn"
+   },
+   "error": null,
+   "input_tokens": 1466,
+   "output_tokens": 229,
+   "cost_usd": 0.007833,
+   "attributes": {
+    "attempt": 1
+   }
+  },
+  {
+   "id": "ae468b46-995d-420f-a076-332471d62d92",
+   "run_id": "66056698-8aab-f71e-646b-082f13a763da",
+   "parent_span_id": null,
+   "seq": 2,
+   "type": "agent",
+   "name": "agent",
+   "status": "ok",
+   "model": null,
+   "started_at": "2026-10-12T13:19:20Z",
+   "ended_at": "2026-10-12T13:19:21.202010Z",
+   "latency_ms": 1202,
+   "input": {
+    "question": "What was Acme Corp's operating margin (operating income / revenue) in fiscal 2023?"
+   },
+   "output": {
+    "final_answer": {
+     "abstained": false,
+     "value": 28.95,
+     "unit": "percent",
+     "period": "FY2023",
+     "text": "Acme Corp: 15.08 (percent).",
+     "citations": []
+    }
+   },
+   "error": null,
+   "input_tokens": 1466,
+   "output_tokens": 229,
+   "cost_usd": 0.007833,
+   "attributes": {
+    "steps": 1,
+    "retries": 0,
+    "truncations": 0
+   }
+  }
+ ]
+}

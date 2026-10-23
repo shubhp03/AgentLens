@@ -1,0 +1,74 @@
+# FULL stack: postgres + MCP tool servers + agent + Python gateway (FastAPI) + dashboard.
+# Needs .env with SEC_USER_AGENT, ADMIN_API_KEY (>=16 chars), ANTHROPIC_API_KEY and config/pricing.yaml (docs/RUNNING.md).
+# For the dashboard alone use docker-compose.demo.yml. Validated with `docker compose config`; images not built in the authoring sandbox (no Docker daemon).
+name: agentlens
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: agentlens
+      POSTGRES_USER: agentlens
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agentlens}
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentlens"]
+      interval: 5s
+      retries: 10
+
+  edgar-mcp:
+    build: {context: ., dockerfile: docker/python.Dockerfile}
+    command: ["edgar-mcp"]
+    environment:
+      MCP_TRANSPORT: streamable-http
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: "8101"
+      SEC_USER_AGENT: ${SEC_USER_AGENT:?set SEC_USER_AGENT in .env}
+      EDGAR_CACHE_DIR: /cache
+    volumes: [edgar_cache:/cache]
+
+  calc-mcp:
+    build: {context: ., dockerfile: docker/python.Dockerfile}
+    command: ["calc-mcp"]
+    environment:
+      MCP_TRANSPORT: streamable-http
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: "8102"
+
+  agent:
+    build: {context: ., dockerfile: docker/python.Dockerfile}
+    command: ["uvicorn", "agentlens_agent.main:app", "--host", "0.0.0.0", "--port", "8200"]
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      MCP_SERVERS: '{"edgar":"http://edgar-mcp:8101/mcp","calc":"http://calc-mcp:8102/mcp"}'
+      PRICING_FILE: /app/config/pricing.yaml
+    volumes: [./config:/app/config:ro]
+    depends_on: [edgar-mcp, calc-mcp]
+
+  gateway:
+    build: {context: ., dockerfile: docker/python.Dockerfile}
+    command: ["uvicorn", "agentlens_gateway.main:app", "--host", "0.0.0.0", "--port", "8080"]
+    environment:
+      DATABASE_URL: postgresql://agentlens:${POSTGRES_PASSWORD:-agentlens}@postgres:5432/agentlens
+      AGENT_BASE_URL: http://agent:8200
+      ADMIN_API_KEY: ${ADMIN_API_KEY:?set ADMIN_API_KEY in .env}
+      DAILY_COST_CAP_USD: ${DAILY_COST_CAP_USD:-5}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:4200}
+    ports: ["8080:8080"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8080/healthz', timeout=3)"]
+      interval: 10s
+      retries: 6
+    depends_on:
+      postgres: {condition: service_healthy}
+      agent: {condition: service_started}
+
+  dashboard:
+    build: ./dashboard
+    ports: ["4200:80"]
+    depends_on:
+      gateway: {condition: service_healthy}
+
+volumes:
+  pgdata:
+  edgar_cache:

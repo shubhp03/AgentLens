@@ -1,0 +1,575 @@
+openapi: 3.1.0
+info:
+  title: AgentLens Gateway API
+  version: 0.1.0
+  description: |
+    Control plane for agent runs, traces, configs, datasets and eval runs.
+    Auth: `X-API-Key` header on everything except `/healthz`.
+    Errors: RFC 9457 problem+json.
+servers:
+  - url: http://localhost:8080
+security:
+  - ApiKey: []
+
+paths:
+  /api/v1/runs:
+    post:
+      operationId: createRun
+      summary: Start an agent run (async). Poll GET /runs/{id} or subscribe to /runs/{id}/events.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RunCreate'}
+      responses:
+        '202':
+          description: Accepted and queued
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Run'}
+        '400': {$ref: '#/components/responses/Problem'}
+        '429':
+          description: Per-key rate limit exceeded, or daily cost cap reached
+          headers:
+            Retry-After: {schema: {type: integer}}
+          content:
+            application/problem+json:
+              schema: {$ref: '#/components/schemas/Problem'}
+    get:
+      operationId: listRuns
+      parameters:
+        - {name: status, in: query, schema: {$ref: '#/components/schemas/RunStatus'}}
+        - {name: source, in: query, schema: {type: string, enum: [interactive, eval]}}
+        - {name: config_id, in: query, schema: {type: string, format: uuid}}
+        - {name: eval_run_id, in: query, schema: {type: string, format: uuid}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 200, default: 50}}
+        - {name: cursor, in: query, description: Opaque keyset cursor from a previous page, schema: {type: string}}
+      responses:
+        '200':
+          description: Runs, newest first
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/RunPage'}
+
+  /api/v1/runs/{runId}:
+    parameters: [{$ref: '#/components/parameters/RunId'}]
+    get:
+      operationId: getRun
+      parameters:
+        - {name: include, in: query, description: 'Set to "spans" to embed the full trace', schema: {type: string, enum: [spans]}}
+      responses:
+        '200':
+          description: The run (optionally with spans)
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/RunDetail'}
+        '404': {$ref: '#/components/responses/Problem'}
+    delete:
+      operationId: cancelRun
+      summary: Cancel a queued/running run
+      responses:
+        '202':
+          description: Cancellation requested; the run as it stands afterwards (normally already `cancelled`)
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Run'}
+        '404': {$ref: '#/components/responses/Problem'}
+        '409': {$ref: '#/components/responses/Problem'}
+
+  /api/v1/runs/{runId}/events:
+    parameters: [{$ref: '#/components/parameters/RunId'}]
+    get:
+      operationId: streamRunEvents
+      summary: Live trace as Server-Sent Events (replays persisted spans first, then live)
+      responses:
+        '200':
+          description: "SSE stream; each `data:` is an agent event (contracts/agent_events.schema.json). Stream ends after run.finished."
+          content:
+            text/event-stream:
+              schema: {type: string}
+
+  /api/v1/configs:
+    post:
+      operationId: createConfig
+      summary: Create an immutable agent config snapshot (idempotent on config_hash)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/AgentConfigCreate'}
+      responses:
+        '200':
+          description: Existing identical config returned
+          content: {application/json: {schema: {$ref: '#/components/schemas/AgentConfig'}}}
+        '201':
+          description: Created
+          content: {application/json: {schema: {$ref: '#/components/schemas/AgentConfig'}}}
+    get:
+      operationId: listConfigs
+      responses:
+        '200':
+          description: All configs, newest first
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/AgentConfig'}}
+
+  /api/v1/datasets:
+    post:
+      operationId: upsertDataset
+      summary: Register a dataset version with its cases (idempotent on name+version+content_hash; 409 if content changed)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/DatasetCreate'}
+      responses:
+        '201':
+          description: Created
+          content: {application/json: {schema: {$ref: '#/components/schemas/Dataset'}}}
+        '200':
+          description: Identical dataset already registered
+          content: {application/json: {schema: {$ref: '#/components/schemas/Dataset'}}}
+        '409': {$ref: '#/components/responses/Problem'}
+    get:
+      operationId: listDatasets
+      responses:
+        '200':
+          description: Datasets
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/Dataset'}}
+
+  /api/v1/datasets/{datasetId}/cases:
+    get:
+      operationId: listCases
+      parameters:
+        - {name: datasetId, in: path, required: true, schema: {type: string, format: uuid}}
+        - {name: category, in: query, schema: {type: string}}
+      responses:
+        '200':
+          description: Cases
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/EvalCase'}}
+
+  /api/v1/eval-runs:
+    post:
+      operationId: createEvalRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/EvalRunCreate'}
+      responses:
+        '201':
+          description: Created (status=running)
+          content: {application/json: {schema: {$ref: '#/components/schemas/EvalRun'}}}
+    get:
+      operationId: listEvalRuns
+      parameters:
+        - {name: dataset_id, in: query, schema: {type: string, format: uuid}}
+        - {name: limit, in: query, schema: {type: integer, default: 50, maximum: 200}}
+      responses:
+        '200':
+          description: Eval runs with aggregate metrics, newest first
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/EvalRun'}}
+
+  /api/v1/eval-runs/compare:
+    get:
+      operationId: compareEvalRuns
+      summary: Paired comparison (per-case outcomes, Wilson CIs, exact McNemar p-value)
+      parameters:
+        - {name: base, in: query, required: true, schema: {type: string, format: uuid}}
+        - {name: candidate, in: query, required: true, schema: {type: string, format: uuid}}
+      responses:
+        '200':
+          description: Comparison
+          content: {application/json: {schema: {$ref: '#/components/schemas/Comparison'}}}
+
+  /api/v1/eval-runs/{evalRunId}:
+    parameters: [{$ref: '#/components/parameters/EvalRunId'}]
+    get:
+      operationId: getEvalRun
+      responses:
+        '200':
+          description: Eval run with metrics and failure-category breakdown
+          content: {application/json: {schema: {$ref: '#/components/schemas/EvalRunDetail'}}}
+        '404': {$ref: '#/components/responses/Problem'}
+    patch:
+      operationId: updateEvalRun
+      summary: Mark baseline, add notes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_baseline: {type: boolean}
+                notes: {type: string}
+      responses:
+        '200':
+          description: Updated
+          content: {application/json: {schema: {$ref: '#/components/schemas/EvalRun'}}}
+
+  /api/v1/eval-runs/{evalRunId}/results:
+    parameters: [{$ref: '#/components/parameters/EvalRunId'}]
+    post:
+      operationId: addEvalResults
+      summary: Runner posts scored results (batch; idempotent on case_key+repeat_idx)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 1
+              maxItems: 200
+              items: {$ref: '#/components/schemas/EvalResultCreate'}
+      responses:
+        '204': {description: Stored}
+        '400': {$ref: '#/components/responses/Problem'}
+    get:
+      operationId: listEvalResults
+      parameters:
+        - {name: passed, in: query, schema: {type: boolean}}
+        - {name: failure_category, in: query, schema: {type: string}}
+        - {name: category, in: query, schema: {type: string}}
+      responses:
+        '200':
+          description: Per-case results
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/EvalResult'}}
+
+  /api/v1/eval-runs/{evalRunId}/complete:
+    parameters: [{$ref: '#/components/parameters/EvalRunId'}]
+    post:
+      operationId: completeEvalRun
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: {type: string, enum: [completed, failed, cancelled]}
+                gate_passed: {type: boolean}
+      responses:
+        '200':
+          description: Finalized
+          content: {application/json: {schema: {$ref: '#/components/schemas/EvalRun'}}}
+
+  /api/v1/stats/overview:
+    get:
+      operationId: getOverview
+      summary: Dashboard header numbers
+      responses:
+        '200':
+          description: Overview
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [runs_today, cost_today_usd, daily_cap_usd]
+                properties:
+                  runs_today: {type: integer}
+                  cost_today_usd: {type: number}
+                  daily_cap_usd: {type: number}
+                  latest_baseline_pass_rate: {type: [number, 'null']}
+
+  /healthz:
+    get:
+      operationId: health
+      summary: Liveness + database reachability (no auth; used by load balancers and Docker)
+      security: []
+      responses:
+        '200':
+          description: UP
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status: {type: string, const: UP}
+
+components:
+  securitySchemes:
+    ApiKey: {type: apiKey, in: header, name: X-API-Key}
+
+  parameters:
+    RunId: {name: runId, in: path, required: true, schema: {type: string, format: uuid}}
+    EvalRunId: {name: evalRunId, in: path, required: true, schema: {type: string, format: uuid}}
+
+  responses:
+    Problem:
+      description: Error
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/Problem'}
+
+  schemas:
+    Problem:
+      type: object
+      required: [title, status]
+      properties:
+        type: {type: string, format: uri-reference}
+        title: {type: string}
+        status: {type: integer}
+        detail: {type: string}
+        instance: {type: string}
+
+    RunStatus: {type: string, enum: [queued, running, completed, failed, cancelled]}
+    TerminationReason:
+      type: string
+      enum: [answered, step_limit, budget_exceeded, tool_failure, provider_error, timeout, cancelled, gateway_restart]
+
+    Citation:
+      type: object
+      required: [accession]
+      properties:
+        accession: {type: string}
+        section: {type: [string, 'null']}
+        concept: {type: [string, 'null']}
+    Answer:
+      type: object
+      required: [text]
+      properties:
+        abstained: {type: boolean, default: false}
+        value: {type: [number, 'null']}
+        unit: {type: [string, 'null']}
+        period: {type: [string, 'null']}
+        text: {type: string}
+        citations: {type: array, items: {$ref: '#/components/schemas/Citation'}}
+
+    AgentConfigCreate:
+      type: object
+      required: [name, provider, model, system_prompt_id, system_prompt_sha]
+      properties:
+        name: {type: string}
+        provider: {type: string}
+        model: {type: string}
+        system_prompt_id: {type: string}
+        system_prompt_sha: {type: string}
+        temperature: {type: number, minimum: 0, maximum: 2, default: 0}
+        max_steps: {type: integer, minimum: 1, maximum: 50, default: 12}
+        max_cost_usd: {type: [number, 'null'], exclusiveMinimum: 0}
+        max_output_tokens: {type: integer, default: 2048}
+        tool_allowlist: {type: array, items: {type: string}}
+        params: {type: object, additionalProperties: true}
+    AgentConfig:
+      allOf:
+        - {$ref: '#/components/schemas/AgentConfigCreate'}
+        - type: object
+          required: [id, config_hash, created_at]
+          properties:
+            id: {type: string, format: uuid}
+            config_hash: {type: string}
+            created_at: {type: string, format: date-time}
+
+    RunCreate:
+      type: object
+      required: [question]
+      description: Provide config_id OR inline config (snapshotted on the fly).
+      properties:
+        question: {type: string, minLength: 1, maxLength: 2000}
+        config_id: {type: string, format: uuid}
+        config: {$ref: '#/components/schemas/AgentConfigCreate'}
+        source: {type: string, enum: [interactive, eval], default: interactive}
+        eval_run_id: {type: [string, 'null'], format: uuid}
+    Totals:
+      type: object
+      properties:
+        input_tokens: {type: integer}
+        output_tokens: {type: integer}
+        cache_read_tokens: {type: integer}
+        cost_usd: {type: number}
+        latency_ms: {type: [integer, 'null']}
+        step_count: {type: integer}
+        tool_call_count: {type: integer}
+    Run:
+      type: object
+      required: [id, status, question, config_id, created_at]
+      properties:
+        id: {type: string, format: uuid}
+        config_id: {type: string, format: uuid}
+        eval_run_id: {type: [string, 'null'], format: uuid}
+        source: {type: string}
+        question: {type: string}
+        status: {$ref: '#/components/schemas/RunStatus'}
+        termination_reason: {anyOf: [{$ref: '#/components/schemas/TerminationReason'}, {type: 'null'}]}
+        final_answer: {anyOf: [{$ref: '#/components/schemas/Answer'}, {type: 'null'}]}
+        error: {type: [string, 'null']}
+        totals: {$ref: '#/components/schemas/Totals'}
+        created_at: {type: string, format: date-time}
+        started_at: {type: [string, 'null'], format: date-time}
+        finished_at: {type: [string, 'null'], format: date-time}
+    Span:
+      type: object
+      required: [id, run_id, seq, type, name, status, started_at]
+      properties:
+        id: {type: string, format: uuid}
+        run_id: {type: string, format: uuid}
+        parent_span_id: {type: [string, 'null'], format: uuid}
+        seq: {type: integer}
+        type: {type: string, enum: [agent, llm_call, tool_call]}
+        name: {type: string}
+        status: {type: string, enum: [ok, error]}
+        model: {type: [string, 'null']}
+        started_at: {type: string, format: date-time}
+        ended_at: {type: [string, 'null'], format: date-time}
+        latency_ms: {type: [integer, 'null']}
+        input: {type: object, additionalProperties: true}
+        output: {type: object, additionalProperties: true}
+        error: {type: [string, 'null']}
+        input_tokens: {type: [integer, 'null']}
+        output_tokens: {type: [integer, 'null']}
+        cost_usd: {type: [number, 'null']}
+        attributes: {type: object, additionalProperties: true}
+    RunDetail:
+      allOf:
+        - {$ref: '#/components/schemas/Run'}
+        - type: object
+          properties:
+            spans: {type: array, items: {$ref: '#/components/schemas/Span'}}
+    RunPage:
+      type: object
+      required: [items]
+      properties:
+        items: {type: array, items: {$ref: '#/components/schemas/Run'}}
+        next_cursor: {type: [string, 'null']}
+
+    EvalCase:
+      type: object
+      required: [case_key, question, category, difficulty, expected]
+      properties:
+        id: {type: string, format: uuid}
+        case_key: {type: string}
+        question: {type: string}
+        category: {type: string, enum: [lookup, calc, text_extract, multi_hop, unanswerable]}
+        difficulty: {type: string, enum: [easy, medium, hard]}
+        expected: {type: object, additionalProperties: true, description: See contracts/eval_case.schema.json}
+        required_tools: {type: array, items: {type: string}}
+        provenance: {type: [object, 'null'], additionalProperties: true}
+        status: {type: string, enum: [draft, verified]}
+        tags: {type: array, items: {type: string}}
+    DatasetCreate:
+      type: object
+      required: [name, version, content_hash, cases]
+      properties:
+        name: {type: string}
+        version: {type: string}
+        description: {type: string}
+        content_hash: {type: string}
+        cases: {type: array, minItems: 1, items: {$ref: '#/components/schemas/EvalCase'}}
+    Dataset:
+      type: object
+      required: [id, name, version, content_hash, case_count]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        version: {type: string}
+        description: {type: [string, 'null']}
+        content_hash: {type: string}
+        case_count: {type: integer}
+        created_at: {type: string, format: date-time}
+
+    EvalRunCreate:
+      type: object
+      required: [dataset_id, config_id]
+      properties:
+        dataset_id: {type: string, format: uuid}
+        config_id: {type: string, format: uuid}
+        label: {type: string}
+        trigger: {type: string, enum: [manual, ci, nightly]}
+        git_sha: {type: string}
+        repeats: {type: integer, minimum: 1, maximum: 10, default: 1}
+    EvalMetrics:
+      type: object
+      description: |
+        `pass_rate` is CASE-level: a case passes when a strict majority of its repeats pass (docs/EVAL_DESIGN.md s4).
+        `pass_rate_ci` is the Wilson interval over `n_cases`. `run_pass_rate` (per individual result) is informational only.
+      properties:
+        n_results: {type: integer, description: Number of individual results (cases x repeats)}
+        n_cases: {type: integer}
+        n_cases_passed: {type: integer}
+        pass_rate: {type: number}
+        run_pass_rate: {type: number}
+        pass_rate_ci: {type: array, minItems: 2, maxItems: 2, items: {type: number}, description: Wilson 95% interval over cases}
+        total_cost_usd: {type: number}
+        avg_cost_usd: {type: number}
+        cost_per_success_usd: {type: [number, 'null'], description: total cost / number of passing results}
+        p50_latency_ms: {type: [number, 'null']}
+        p95_latency_ms: {type: [number, 'null']}
+    EvalRun:
+      type: object
+      required: [id, dataset_id, config_id, status]
+      properties:
+        id: {type: string, format: uuid}
+        dataset_id: {type: string, format: uuid}
+        config_id: {type: string, format: uuid}
+        label: {type: string}
+        trigger: {type: string}
+        git_sha: {type: [string, 'null']}
+        repeats: {type: integer}
+        status: {type: string, enum: [running, completed, failed, cancelled]}
+        is_baseline: {type: boolean}
+        gate_passed: {type: [boolean, 'null']}
+        notes: {type: [string, 'null']}
+        started_at: {type: string, format: date-time}
+        finished_at: {type: [string, 'null'], format: date-time}
+        metrics: {anyOf: [{$ref: '#/components/schemas/EvalMetrics'}, {type: 'null'}]}
+    EvalRunDetail:
+      allOf:
+        - {$ref: '#/components/schemas/EvalRun'}
+        - type: object
+          properties:
+            failure_breakdown:
+              type: object
+              additionalProperties: {type: integer}
+              description: failure_category -> count
+            category_pass_rates:
+              type: object
+              additionalProperties: {type: number}
+    EvalResultCreate:
+      type: object
+      required: [case_key, passed, run_id]
+      properties:
+        case_key: {type: string}
+        repeat_idx: {type: integer, minimum: 0, default: 0}
+        run_id: {type: string, format: uuid}
+        passed: {type: boolean}
+        scores: {type: object, additionalProperties: true}
+        failure_category: {type: [string, 'null']}
+        judge_rationale: {type: [string, 'null']}
+    EvalResult:
+      allOf:
+        - {$ref: '#/components/schemas/EvalResultCreate'}
+        - type: object
+          properties:
+            id: {type: string, format: uuid}
+            latency_ms: {type: [integer, 'null']}
+            cost_usd: {type: number}
+    Comparison:
+      type: object
+      required: [n, base_pass_rate, candidate_pass_rate, p_value]
+      properties:
+        n: {type: integer}
+        base_pass_rate: {type: number}
+        candidate_pass_rate: {type: number}
+        base_ci: {type: array, items: {type: number}}
+        candidate_ci: {type: array, items: {type: number}}
+        delta: {type: number}
+        base_only: {type: integer}
+        candidate_only: {type: integer}
+        p_value: {type: number}
+        regression: {type: boolean}
+        flipped_cases:
+          type: array
+          items:
+            type: object
+            properties:
+              case_key: {type: string}
+              direction: {type: string, enum: [regressed, improved]}

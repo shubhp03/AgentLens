@@ -1,0 +1,17 @@
+[project]
+name = "agentlens-tools"
+version = "0.1.0"
+description = "MCP tool servers: SEC EDGAR access and a safe calculator."
+requires-python = ">=3.11"
+dependencies = ["mcp>=2,<3", "httpx>=0.27", "beautifulsoup4>=4.12"]
+
+[project.scripts]
+edgar-mcp = "agentlens_tools.edgar_server:main"
+calc-mcp = "agentlens_tools.calc:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentlens_tools"]
