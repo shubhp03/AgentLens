@@ -1,7 +1,7 @@
 # Build: Angular production bundle. Serve: nginx with SPA fallback; /config.json is generated at container start
 # from env vars, so one image runs anywhere (API_BASE_URL, DEMO). The nginx stage was built and run from the host's
 # `ng build` output and serves config.json + the SPA fallback; the Node stage (`npm ci && ng build`) has run on a host,
-# not inside Docker yet (the CI `docker` job covers it).
+# not inside Docker on the author's machine; the CI `docker` job builds it (Node stage included) and passed on 2026-10-24.
 FROM node:22 AS build
 WORKDIR /src
 COPY package.json package-lock.json ./

@@ -49,7 +49,8 @@ AgentLens: a tool-using SEC-filings agent + evaluation/observability platform. R
   and one question through Postgres 16 (`pgserver`) → agent → gateway → Angular dashboard in a browser (run list + trace detail
   render, no console errors). Not automated; no scored eval has been run.
 - DOCKER (2026-10-24, manual): images built and run in the sandbox (dockerd with vfs, host networking, base images via mirror.gcr.io): live question answered through containerized Postgres 16 + MCP over streamable-http + agent + gateway + dashboard image. Substitutions: uv binary from host (ghcr blocked), dashboard nginx stage built from host `ng build` output (npm failed in sandbox).
-- NOT DONE / UNVERIFIED: compose bridge networking and the CI `docker` job have never run; dashboard live only for runs/trace
+- CI (2026-10-24): the first real GitHub run is green for `python`, `dashboard` and `docker` (the compose stack on bridge networking, built from the real Dockerfiles, smoke-checked without an LLM key). Earlier the workflow was invalid (job-level `hashFiles`) and no job had run.
+- NOT DONE / UNVERIFIED: no live LLM call inside the compose stack via CI (by design); dashboard live only for runs/trace
   views (Evals pages checked once on a live gateway-mode run of 2 abstain cases). The direct-mode `agentlens-eval run` pilot
   command cannot score the all-draft seed dataset (scorer raises on empty gold; gateway mode refuses it up front).
 - Owner-only: EV-02 golden set (hand-verified against filings; 80 DRAFT candidates + worksheet prepared in `evals/datasets/golden_v1_*`, 0 verified), OPS-07 pricing, TL-04 live EDGAR check.

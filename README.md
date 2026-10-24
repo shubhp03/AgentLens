@@ -44,7 +44,8 @@ Real bugs and risks found by running against live SEC data and a live model, not
 |---|---|
 | Offline tests | 223 Python + 22 dashboard unit tests, `ruff` clean, contracts in sync |
 | Live LLM + live SEC through the real stack | Verified manually (2026-10-23/24): agent, MCP tools, gateway, Postgres, dashboard |
-| Docker images | Built and run manually (2026-10-24) with documented substitutions; compose bridge networking and the CI `docker` job have not run yet |
+| CI (GitHub Actions) | First real run 2026-10-24: `python` (lint, format, contracts, 223 tests, stack smoke), `dashboard` (22 tests, build) and `docker` (builds every image, brings the compose stack up on bridge networking, smoke-checks health, migration, dashboard config and agent to MCP) all green. Before that, the workflow was invalid and no job had ever run |
+| Docker images | Also built and run by hand (2026-10-24) with a live question answered through containers |
 | Recorded runs, cost | 8 real runs, $0.008 to $0.074 each, 1.7 s to 12 s, $0.33 total |
 | Golden set | 80 draft candidates generated; **0 verified** (human work in progress) |
 | Scored eval results | **None yet** |
