@@ -165,7 +165,7 @@ This is the part that makes the project more than a demo.
   (`gateway_restart`, `timeout`) are scored as `provider_error`. Incomplete gold is refused before any model call.
   Tested in `gateway/tests/test_eval_gateway_mode.py` (asserts identical records vs direct mode).
 - `scripts/replay.py` + `dashboard/public/replay/` — **replay dataset**: `record` asks dev-split golden questions through a live gateway,
-  `export` writes runs, spans and configs in the dashboard's static layout (no eval data; secrets scan on output). The dashboard reads
+  `export` (`export_replay`, tested in `gateway/tests/test_replay_export.py`) writes runs, spans and configs in the dashboard's static layout, plus eval runs, results and paired comparisons, but ONLY for completed eval runs whose dataset has every case verified (others are skipped with a reason); secrets scan on output. The dashboard reads
   `dataset`/`dataPath` from `config.json` (`config.replay.json` -> `recorded`, banner and Overview/Evals copy change accordingly).
 - `scripts/gold_candidates.py` — **EV-03 gold-candidate generator**: `golden_v1_spec.yaml` (questions + what they pin) + SEC XBRL
   companyfacts -> DRAFT cases and a verification worksheet. It can never emit a verified case (asserted). Multi-hop gold is the

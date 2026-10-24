@@ -2,11 +2,12 @@
 
     # 1. with the stack up (docs/RUNNING.md section 4) and ADMIN_API_KEY set
     uv run python scripts/replay.py record  --gateway http://localhost:8080
-    # 2. snapshot everything the gateway holds (source=interactive) into dashboard/public/replay/
+    # 2. snapshot interactive runs + publishable eval runs into dashboard/public/replay/
     uv run python scripts/replay.py export  --gateway http://localhost:8080
 
 What the replay is: real Claude calls over real SEC data, captured once and served as static JSON (no backend, no spend).
-What it is NOT: benchmark results. Eval pages stay empty until real, human-verified eval runs exist (EV-02).
+What it is NOT: benchmark results. Eval runs are published ONLY if they are completed and their dataset is fully human-verified
+(every case status=verified); anything else is skipped with a reason, so the Evals pages stay empty until real results exist (EV-02).
 
 `record` only asks questions taken from DEV-split golden candidates, so the held-out test split is never exercised.
 It spends real money (a few cents per question, each run capped by the config's max_cost_usd).
@@ -94,63 +95,137 @@ def write(path: Path, data: object) -> None:
     path.write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n")
 
 
-def export(args: argparse.Namespace) -> int:
-    with client(args.gateway) as c:
-        items, cursor = [], None
-        while True:
-            page = c.get(
-                f"{API}/runs",
-                params={
-                    "source": "interactive",
-                    "limit": 200,
-                    **({"cursor": cursor} if cursor else {}),
-                },
-            ).json()
-            items += page["items"]
-            cursor = page["next_cursor"]
-            if not cursor:
-                break
+def _paged_runs(c: httpx.Client, **params: str) -> list[dict]:
+    items: list[dict] = []
+    cursor = None
+    while True:
+        page = c.get(
+            f"{API}/runs", params={**params, "limit": 200, **({"cursor": cursor} if cursor else {})}
+        ).json()
+        items += page["items"]
+        cursor = page["next_cursor"]
+        if not cursor:
+            return items
+
+
+def publishable_eval_runs(c: httpx.Client) -> tuple[list[dict], list[str]]:
+    """Completed eval runs whose dataset is FULLY verified. Anything else is skipped with a reason: unverified (draft)
+    gold must never reach a public page, whatever its numbers look like."""
+    ok: list[dict] = []
+    skipped: list[str] = []
+    verified: dict[str, bool] = {}
+    for er in c.get(f"{API}/eval-runs", params={"limit": 200}).json():
+        label = f"{er.get('label') or er['id'][:8]} ({er['id'][:8]})"
+        if er["status"] != "completed":
+            skipped.append(f"{label}: status {er['status']}, not completed")
+            continue
+        ds = er["dataset_id"]
+        if ds not in verified:
+            cases = c.get(f"{API}/datasets/{ds}/cases").json()
+            verified[ds] = bool(cases) and all(x["status"] == "verified" for x in cases)
+        if not verified[ds]:
+            skipped.append(f"{label}: dataset has unverified (draft) cases")
+            continue
+        ok.append(er)
+    return ok, skipped
+
+
+def export_replay(
+    gateway: str, key: str, out: Path, *, since: str | None = None, traces: str = "failed"
+) -> dict:
+    """Snapshot a gateway into the dashboard's static dataset layout (see DemoAgentLensApi). `traces` controls which
+    eval-linked runs get a full trace file: 'failed' (default, keeps the repo lean; the Evals page lists failures first)
+    or 'all'."""
+    with httpx.Client(base_url=gateway.rstrip("/"), headers={"X-API-Key": key}, timeout=60) as c:
         runs = [
             r
-            for r in items
-            if r["status"] in ("completed", "failed")
-            and (not args.since or r["created_at"] >= args.since)
+            for r in _paged_runs(c, source="interactive")
+            if r["status"] in ("completed", "failed") and (not since or r["created_at"] >= since)
         ]
         runs.sort(key=lambda r: r["created_at"], reverse=True)
         details = {
             r["id"]: c.get(f"{API}/runs/{r['id']}", params={"include": "spans"}).json()
             for r in runs
         }
+        eval_runs, skipped = publishable_eval_runs(c)
+        eval_detail = {er["id"]: c.get(f"{API}/eval-runs/{er['id']}").json() for er in eval_runs}
+        eval_results = {
+            er["id"]: c.get(f"{API}/eval-runs/{er['id']}/results").json() for er in eval_runs
+        }
+        for results in eval_results.values():
+            for r in results:
+                want = traces == "all" or not r["passed"]
+                if want and r["run_id"] and r["run_id"] not in details:
+                    details[r["run_id"]] = c.get(
+                        f"{API}/runs/{r['run_id']}", params={"include": "spans"}
+                    ).json()
+        compares: dict[str, dict] = {}
+        for base in eval_runs:
+            for cand in eval_runs:
+                if base["id"] != cand["id"] and base["dataset_id"] == cand["dataset_id"]:
+                    r = c.get(
+                        f"{API}/eval-runs/compare",
+                        params={"base": base["id"], "candidate": cand["id"]},
+                    )
+                    if (
+                        r.is_success
+                    ):  # case sets that differ are refused by the gateway; leave those pairs out
+                        compares[f"{base['id']}__{cand['id']}"] = r.json()
         configs = c.get(f"{API}/configs").json()
-        used = {r["config_id"] for r in runs}
         overview = c.get(f"{API}/stats/overview").json()
 
-    if OUT.exists():
-        shutil.rmtree(OUT)
-    write(OUT / "runs.json", runs)
+    used = {r["config_id"] for r in runs} | {er["config_id"] for er in eval_runs}
+    baseline_ids = {er["id"] for er in eval_runs if er.get("is_baseline")}
+    if out.exists():
+        shutil.rmtree(out)
+    write(out / "runs.json", runs)
     for rid, d in details.items():
-        write(OUT / "runs" / f"{rid}.json", d)
-    write(OUT / "configs.json", [x for x in configs if x["id"] in used])
-    write(
-        OUT / "eval-runs.json", []
-    )  # no real, verified eval runs exist yet; never publish plumbing checks as results
+        write(out / "runs" / f"{rid}.json", d)
+    write(out / "configs.json", [x for x in configs if x["id"] in used])
+    write(out / "eval-runs.json", eval_runs)
+    for er_id in eval_detail:
+        write(out / "eval-runs" / f"{er_id}.json", eval_detail[er_id])
+        write(out / "eval-results" / f"{er_id}.json", eval_results[er_id])
+    for name, cmp in compares.items():
+        write(out / "compare" / f"{name}.json", cmp)
     cost = sum(r["totals"]["cost_usd"] for r in runs)
-    write(OUT / "overview.json", {
-        "runs_today": len(runs), "cost_today_usd": round(cost, 6),
-        "daily_cap_usd": overview["daily_cap_usd"], "latest_baseline_pass_rate": None,
-    })  # fmt: skip
-    (OUT / "README.txt").write_text(
-        f"Runs recorded from a live stack (real Claude calls, real SEC data) and exported {datetime.now(UTC).isoformat(timespec='seconds')}"
-        " by scripts/replay.py. Individual runs, not benchmark results. No eval runs are included.\n"
+    baseline_rate = next(
+        (eval_detail[i]["metrics"]["pass_rate"] for i in baseline_ids if i in eval_detail), None
     )
-    leaks = [
-        p
-        for p in OUT.rglob("*.json")
-        if any(s in p.read_text() for s in ("sk-ant", os.environ["ADMIN_API_KEY"]))
-    ]
+    write(out / "overview.json", {
+        "runs_today": len(runs), "cost_today_usd": round(cost, 6),
+        "daily_cap_usd": overview["daily_cap_usd"], "latest_baseline_pass_rate": baseline_rate,
+    })  # fmt: skip
+    evals_note = (
+        f"{len(eval_runs)} eval run(s) on fully human-verified datasets are included."
+        if eval_runs
+        else "No eval runs are included."
+    )
+    (out / "README.txt").write_text(
+        f"Runs recorded from a live stack (real Claude calls, real SEC data) and exported {datetime.now(UTC).isoformat(timespec='seconds')}"
+        f" by scripts/replay.py. {evals_note} Individual runs are not benchmark results.\n"
+    )
+    leaks = [p for p in out.rglob("*.json") if any(x in p.read_text() for x in ("sk-ant", key))]
     if leaks:
-        sys.exit(f"secret-looking content in {leaks}")
-    print(f"exported {len(runs)} runs, cost ${cost:.4f} -> {OUT}")
+        shutil.rmtree(out)
+        raise SystemExit(f"secret-looking content in {leaks}; export removed")
+    return {
+        "runs": len(runs), "cost": cost, "eval_runs": len(eval_runs),
+        "compares": len(compares), "traces": len(details), "skipped": skipped,
+    }  # fmt: skip
+
+
+def export(args: argparse.Namespace) -> int:
+    key = os.environ.get("ADMIN_API_KEY")
+    if not key:
+        sys.exit("ADMIN_API_KEY must be set in the environment")
+    r = export_replay(args.gateway, key, OUT, since=args.since, traces=args.traces)
+    for why in r["skipped"]:
+        print(f"SKIPPED eval run {why}", file=sys.stderr)
+    print(
+        f"exported {r['runs']} interactive runs (${r['cost']:.4f}), {r['eval_runs']} eval runs, "
+        f"{r['compares']} comparisons, {r['traces']} trace files -> {OUT}"
+    )
     return 0
 
 
@@ -164,6 +239,12 @@ def main() -> None:
             s.add_argument(
                 "--since",
                 help="only runs created at/after this ISO timestamp (skip older recordings)",
+            )
+            s.add_argument(
+                "--traces",
+                choices=["failed", "all"],
+                default="failed",
+                help="which eval-linked runs get a trace file (default: failed ones only)",
             )
         if name == "record":
             s.add_argument("--config", default=str(ROOT / "config" / "agents" / "baseline.yaml"))

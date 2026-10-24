@@ -19,6 +19,14 @@ until human-verified eval runs exist, and the site says so. The synthetic demo d
 Refresh the replay: bring up the stack, `ADMIN_API_KEY=... uv run python scripts/replay.py record` (spends a few cents; asks only
 dev-split golden questions) then `... replay.py export`, commit `dashboard/public/replay/`, push.
 `DATASET=synthetic bash scripts/build_pages.sh` builds the fictional-company demo instead.
+
+**Publishing real eval results to the site** (after you have verified the golden set, EV-02):
+1. Run the evals through the gateway on verified cases only, one run per config (`--verified-only` makes the registered dataset contain
+   only verified cases): `AGENTLENS_GATEWAY_URL=... ADMIN_API_KEY=... uv run agentlens-eval run --dataset evals/datasets/golden_v1_candidates.jsonl --verified-only --config config/agents/baseline.yaml --repeats 3 --budget-usd 15 --label baseline` (repeat for `no_tools` and `small_model`).
+2. Mark the baseline: `curl -X PATCH $AGENTLENS_GATEWAY_URL/api/v1/eval-runs/<id> -H "X-API-Key: $ADMIN_API_KEY" -H 'content-type: application/json' -d '{"is_baseline": true}'`.
+3. `ADMIN_API_KEY=... uv run python scripts/replay.py export --since <timestamp of your last replay recording>`. It publishes **only completed eval runs whose
+   dataset is fully verified** and says why it skipped any other; it adds results, the paired comparisons between runs on the same dataset, and trace files for
+   failed results (`--traces all` for every result, bigger repo). Commit `dashboard/public/replay/` and merge to `main`; the Pages workflow does the rest.
 1. Push the repo to GitHub (public). **Before the first public push**, check no secrets are committed: `.env` and
    `config/pricing.yaml` are git-ignored; run `git status` and `git log -p | grep -i api_key` as a sanity check.
 2. Repo → Settings → Pages → Source: **GitHub Actions**.

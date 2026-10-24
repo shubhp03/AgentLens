@@ -43,7 +43,7 @@ AgentLens: a tool-using SEC-filings agent + evaluation/observability platform. R
 - If a requirement is ambiguous or conflicts with the architecture doc, stop and ask — don't guess.
 
 ## Current state (read before picking work)
-- DONE and tested (222 offline tests + `make stack-smoke`): agent loop, MCP registry, tools, eval harness (direct + gateway mode, EV-10), schema V1+V2,
+- DONE and tested (226 offline tests + `make stack-smoke`): agent loop, MCP registry, tools, eval harness (direct + gateway mode, EV-10), schema V1+V2,
   Python gateway (auth, rate limit, cost cap, executor, SSE, evals API, contract test), Angular dashboard (synthetic demo data).
 - VERIFIED LIVE (2026-10-23, manual): live Anthropic + live EDGAR via the real MCP tool servers (3-case unscored pilot, $0.17),
   and one question through Postgres 16 (`pgserver`) → agent → gateway → Angular dashboard in a browser (run list + trace detail

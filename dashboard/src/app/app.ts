@@ -9,7 +9,7 @@ import { RuntimeConfigService } from './core/runtime-config';
   template: `
     @if (demo && recorded) {
       <div class="banner demo" role="note">
-        Replay: runs <strong>recorded from a live stack</strong> (real Claude calls, real SEC data). Read-only. Individual runs, not benchmark results.
+        Read-only replay of a <strong>live stack</strong> (real Claude calls, real SEC data). Eval results appear only for datasets whose gold a human has verified against the filings.
       </div>
     } @else if (demo) {
       <div class="banner demo" role="note">

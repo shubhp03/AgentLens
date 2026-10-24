@@ -20,7 +20,7 @@ import { StatusChip } from '../../shared/status-chip';
           <div class="grid cols-4">
             <div class="card stat"><div class="label">{{ replay ? 'Runs recorded' : 'Runs today' }}</div><div class="value">{{ d.overview.runs_today }}</div></div>
             <div class="card stat">
-              <div class="label">{{ replay ? 'Total spend' : 'Spend today' }}</div>
+              <div class="label">{{ replay ? 'Spend on recorded runs' : 'Spend today' }}</div>
               <div class="value">{{ usd(d.overview.cost_today_usd) }}</div>
               @if (!replay) {
               <div class="bar" [class.warn]="spendPct() >= 0.8" [class.bad]="spendPct() >= 1" role="progressbar" aria-label="Daily spend" [attr.aria-valuenow]="(spendPct() * 100).toFixed(0)" aria-valuemin="0" aria-valuemax="100">
@@ -32,7 +32,7 @@ import { StatusChip } from '../../shared/status-chip';
             <div class="card stat">
               <div class="label">Latest baseline pass rate</div>
               <div class="value">{{ pct(d.overview.latest_baseline_pass_rate) }}</div>
-              @if (replay) { <div class="sub">Not measured yet: waiting on the human-verified golden set. <a routerLink="/evals">Evals</a></div> }
+              @if (replay && d.overview.latest_baseline_pass_rate == null) { <div class="sub">Not measured yet: waiting on the human-verified golden set. <a routerLink="/evals">Evals</a></div> }
               @else { <div class="sub"><a routerLink="/evals">All eval runs</a></div> }
             </div>
           </div>
