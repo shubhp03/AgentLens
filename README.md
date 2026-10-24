@@ -11,7 +11,7 @@ hand-verified golden set, and every change to a model, prompt or tool is compare
 ![A real run: question, answer with citations, and the full trace waterfall](docs/img/trace-multihop.png)
 <sub>A real run (live Claude + live SEC data): Alphabet vs Microsoft operating margin, 6 LLM steps and 10 tool calls, $0.069.</sub>
 
-**Replay (real recorded runs, no backend):** _link added once GitHub Pages is enabled; see [docs/DEPLOY.md](docs/DEPLOY.md) section A._
+**Replay (real recorded runs, no backend): [shubhp03.github.io/AgentLens](https://shubhp03.github.io/AgentLens/)**. Read-only; individual runs, not benchmark results.
 
 ## What's inside
 - **Agent** (Python): provider-agnostic tool-calling loop with step and cost budgets, retries and a structured terminal answer
