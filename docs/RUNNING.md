@@ -44,6 +44,13 @@ cp config/pricing.example.yaml config/pricing.yaml
 uv run agentlens-eval validate-dataset evals/datasets/golden_v0.jsonl
 ```
 
+**Golden set candidates (EV-02/EV-03).** `evals/datasets/golden_v1_candidates.jsonl` holds 80 DRAFT cases (20 lookup, 20 calc, 14 multi_hop,
+12 text_extract, 14 unanswerable) generated from SEC XBRL by `scripts/gold_candidates.py` from `evals/datasets/golden_v1_spec.yaml`.
+None are verified. Work through `evals/datasets/golden_v1_worksheet.md`: open each filing, confirm the value, then set
+`status: verified` and `provenance.verified_by`. Text cases need you to write `must_contain`. Regenerate with
+`uv run python scripts/gold_candidates.py evals/datasets/golden_v1_spec.yaml evals/datasets/golden_v1_candidates.jsonl`
+(this overwrites hand edits, so verify in a copy or commit first). Only `--verified-only` runs count as results.
+
 **Pilot first (up to $2).** Proves the plumbing end to end before you invest in the golden set:
 ```bash
 uv run agentlens-eval run --dataset evals/datasets/golden_v0.jsonl \

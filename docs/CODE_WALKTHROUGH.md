@@ -164,6 +164,11 @@ This is the part that makes the project more than a demo.
   `<out>/gateway_eval_run.json`; a budget stop leaves the eval run open so a re-run can finish it. Gateway-only end states
   (`gateway_restart`, `timeout`) are scored as `provider_error`. Incomplete gold is refused before any model call.
   Tested in `gateway/tests/test_eval_gateway_mode.py` (asserts identical records vs direct mode).
+- `scripts/gold_candidates.py` — **EV-03 gold-candidate generator**: `golden_v1_spec.yaml` (questions + what they pin) + SEC XBRL
+  companyfacts -> DRAFT cases and a verification worksheet. It can never emit a verified case (asserted). Multi-hop gold is the
+  percentage-point *difference* between the two sides so both must be retrieved (a "winner's value" gold lets a model that
+  already knows the winner look up one number); pairs closer than 2 pp are rejected. Not covered yet: restated-figure and
+  amended-filing traps (the 2021-2025 facts used show no restatements), and ambiguity in non-calendar fiscal labels.
 - **Case-level pass = strict majority of repeats; a tie fails.** (Why: one lucky sample shouldn't count.)
 - `cli.py` — `agentlens-eval validate-dataset | run | report | compare`. `run` flags include `--budget-usd`, `--repeats`,
   `--split`, `--limit`, `--verified-only`, `--gate --baseline`. Exit code 3 = budget stopped the run.
@@ -252,7 +257,7 @@ goes one level up: gateway + agent + the real calculator MCP subprocess + Postgr
 
 - **OPS-07** fill `config/pricing.yaml` from the provider pricing page (with as-of date).
 - **TL-04** run the EDGAR tools against real SEC data and fix what breaks.
-- **EV-02** author and hand-verify the golden set.
+- **EV-02** hand-verify the golden set: 80 draft candidates and a worksheet are ready (`evals/datasets/golden_v1_*`); 0 verified.
 - **AG-10** one live Anthropic call to check the adapter.
 - Build and run the Docker images; run the dashboard against the live gateway (`docs/RUNNING.md` §4).
 - Only then: real eval run → real numbers → README table → LinkedIn. Resume bullets must use measured numbers only.

@@ -68,8 +68,8 @@ Releases
 | ID | P | Requirement | AC | Owner | Status |
 |---|---|---|---|---|---|
 | EV-01 | P0 | Dataset schema + loader (JSONL), draft/verified states | `agentlens-eval validate-dataset` works; verified cases need provenance (`test_case_dataset.py`) | AI | ☑ |
-| EV-02 | P0 | **Author the golden set**: ≥60 verified cases (target 80) per distribution in EVAL_DESIGN §2 | Every verified case has provenance (accession/concept, date read, verified_by); periods pinned; unanswerables included | **You** | ☐ |
-| EV-03 | P1 | Gold-candidate generator: from ticker+concept+period emit a draft case from XBRL | Output validates against schema; always `status: draft` | AI | ☐ |
+| EV-02 | P0 | **Author the golden set**: ≥60 verified cases (target 80) per distribution in EVAL_DESIGN §2 | Every verified case has provenance (accession/concept, date read, verified_by); periods pinned; unanswerables included | **You** | ☐ (80 DRAFT candidates prepared in `golden_v1_candidates.jsonl` + `golden_v1_worksheet.md`; 0 verified; verification is the owner's job) |
+| EV-03 | P1 | Gold-candidate generator: from ticker+concept+period emit a draft case from XBRL | Output validates against schema; always `status: draft` — built: `scripts/gold_candidates.py` + spec `evals/datasets/golden_v1_spec.yaml`, tested in `evals/tests/test_gold_candidates.py` | AI | ☑ |
 | EV-04 | P0 | Deterministic scorers: numeric (unit/period), text, abstain, citation validity, numeric grounding, tool-use metrics | Unit tests incl. unit-scale and period edge cases | AI | ☑ |
 | EV-05 | P0 | Runner **direct mode**: dataset × config × repeats against the agent service; writes `results.jsonl` + traces | Bounded concurrency; `--budget-usd` aborts cleanly; resumable (skips completed case/repeat pairs) — implemented + tested; run with a real key to produce results | Both | ☑ |
 | EV-06 | P0 | **Failure classifier**: trace + answer + expected → `failure_category` per EVAL_DESIGN §5 | Rule table implemented; ≥1 unit test per category using synthetic traces; every failed result gets exactly one category — implemented + tested; run with a real key to produce results | **You** | ☑ |
