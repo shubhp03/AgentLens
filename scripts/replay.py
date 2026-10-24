@@ -34,6 +34,8 @@ API = "/api/v1"
 # Chosen to show different behaviours, not to flatter the agent: a plain lookup, a concept-variant trap, a derived metric,
 # text extraction from a 10-K, a two-company comparison, and an abstention. All are dev-split candidates.
 RECORD_KEYS = [
+    "calc-aapl-growth-fy23",
+    "multihop-opmargin-googl-msft-fy23",
     "lookup-nvda-revenue-fy2024",
     "lookup-googl-revenue-fy2022",
     "calc-nvda-op-margin-fy24",
@@ -108,7 +110,12 @@ def export(args: argparse.Namespace) -> int:
             cursor = page["next_cursor"]
             if not cursor:
                 break
-        runs = [r for r in items if r["status"] in ("completed", "failed")]
+        runs = [
+            r
+            for r in items
+            if r["status"] in ("completed", "failed")
+            and (not args.since or r["created_at"] >= args.since)
+        ]
         runs.sort(key=lambda r: r["created_at"], reverse=True)
         details = {
             r["id"]: c.get(f"{API}/runs/{r['id']}", params={"include": "spans"}).json()
@@ -153,6 +160,11 @@ def main() -> None:
     for name, fn in (("record", record), ("export", export)):
         s = sub.add_parser(name)
         s.add_argument("--gateway", default="http://localhost:8080")
+        if name == "export":
+            s.add_argument(
+                "--since",
+                help="only runs created at/after this ISO timestamp (skip older recordings)",
+            )
         if name == "record":
             s.add_argument("--config", default=str(ROOT / "config" / "agents" / "baseline.yaml"))
         s.set_defaults(fn=fn)

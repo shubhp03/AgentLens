@@ -45,3 +45,10 @@ def test_usage_addition():
     assert Usage(input_tokens=1, output_tokens=2) + Usage(
         input_tokens=3, cache_read_tokens=4
     ) == Usage(input_tokens=4, output_tokens=2, cache_read_tokens=4)
+
+
+def test_period_field_is_specified_as_a_label_only() -> None:
+    """The scorer compares period labels exactly, so the schema the model sees must ask for a bare label.
+    (Live recordings showed 'FY2024 (ended 2024-01-28)' under the looser 'e.g. FY2023' wording.)"""
+    desc = Answer.model_json_schema()["properties"]["period"]["description"]
+    assert "LABEL only" in desc and "FY2023" in desc and "Never add dates" in desc

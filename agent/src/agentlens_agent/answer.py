@@ -39,7 +39,12 @@ class Answer(BaseModel):
         default=None, description="Numeric answer, if the question is numeric"
     )
     unit: Unit | None = Field(default=None, description="Unit of `value`")
-    period: str | None = Field(default=None, description="e.g. 'FY2023' or 'Q2 2024'")
+    period: str | None = Field(
+        default=None,
+        description="Period LABEL only, nothing else: the company's own fiscal-year label as 'FY' plus the four-digit "
+        "year (e.g. 'FY2023'; a fiscal year ending 2024-01-28 that the company calls fiscal 2024 is 'FY2024') or a "
+        "quarter as 'Q2 2024'. Never add dates, parentheses or explanation here; put those in `text`.",
+    )
     text: str = Field(description="Short explanation or the textual answer")
     citations: list[Citation] = Field(default_factory=list)
 

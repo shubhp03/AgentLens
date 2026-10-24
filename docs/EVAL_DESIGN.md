@@ -24,12 +24,16 @@ Spread across: ≥10 companies, at least 3 non-September/non-December fiscal yea
 Include deliberate traps: companies whose revenue concept differs (`Revenues` vs `RevenueFromContractWithCustomer…`), restated
 figures, a share-class company, a company with an amended filing.
 
-### Known scoring risk: period labels
-`score_numeric` requires `Answer.period` to equal `expected.period` after stripping spaces/hyphens/underscores and upper-casing. The
-tool schema only says "e.g. 'FY2023'", and in the first live recordings the model wrote `FY2024 (ended 2024-01-28)` for correct
-NVIDIA answers: that would be scored `wrong_period` although value and unit are right. Decide before the first scored run whether to
-tighten the prompt/tool description (new prompt sha) or normalise labels in the scorer (changes what the metric means), and record
-the choice in the write-up.
+### Scoring risk found live, and the decision taken: period labels
+`score_numeric` requires `Answer.period` to equal `expected.period` after stripping spaces/hyphens/underscores and upper-casing.
+Under the original wording ("e.g. 'FY2023'") the first live recordings had the model write `FY2024 (ended 2024-01-28)` for correct
+NVIDIA answers, which would have scored `wrong_period` with value and unit right.
+**Decision:** keep the scorer strict (a lenient scorer changes what the metric means) and tighten the field description the model
+sees (`Answer.period`: label only, company's own fiscal-year label, no dates or explanation; guarded by
+`agent/tests/test_events.py::test_period_field_is_specified_as_a_label_only`). Re-recording the same 8 questions afterwards gave a bare
+label every time (8 of 8, one run each: encouraging, not a measured rate). The `system_v1` prompt hash is unchanged, but the
+tool schema changed, so state the date/commit of this change next to any results; earlier recordings used the old wording.
+The risk is not gone: measure `wrong_period` in the failure breakdown, and watch non-calendar fiscal years.
 
 ### Authoring protocol (this is where credibility is won or lost)
 1. **Gold comes from the source, by hand.** Open the filing/XBRL frame yourself, read the number, record `provenance`
