@@ -111,7 +111,7 @@ fails fast** (an agent without tools is broken); `POST /v1/agent/run` returns a 
 ### Tests (`agent/tests`, 37 pass)
 `test_loop.py` (19) is the executable spec: invariants (one `run.finished`, strictly increasing `seq`, unique ids), retries,
 budget, step limit, repair/nudge paths, concurrency (sleeping fake tools), allow-list, truncation. `test_mcp_registry.py` (7)
-spawns a real calc-mcp over stdio and checks that `SEC_USER_AGENT` is forwarded to stdio tool servers (the MCP SDK does *not*
+spawns a real calc-mcp over stdio and checks that `SEC_USER_AGENT` (plus proxy/CA-bundle variables, needed to reach SEC from behind a proxy) is forwarded to stdio tool servers (the MCP SDK does *not*
 inherit your environment — a bug found while preparing the run docs). `test_main.py` (5) drives the real FastAPI route with a scripted LLM.
 
 ## 3. Tools — `tools/src/agentlens_tools/`
@@ -157,6 +157,21 @@ This is the part that makes the project more than a demo.
   using an `asyncio.Condition` so valid runs wait rather than get skipped); a crash in one run is recorded, not fatal.
 - `report.py` — markdown report: pass rate ± CI (case-level), cost per success, latency p50/p95, per-category pass rates,
   failure-category breakdown, groundedness diagnostics.
+- `gateway.py` — **gateway mode (EV-10)**, switched on by `AGENTLENS_GATEWAY_URL` (+ `ADMIN_API_KEY`). `GatewayClient` registers the
+  dataset (content-addressed version) and config, creates the eval run, and per case POSTs `/runs {source: eval}` and follows the
+  run's SSE stream, rebuilding the same event list direct mode produces, so `run_one`, the scorers, classifier and report are shared.
+  Results are POSTed in batches of 200, then the eval run is completed once. Resume re-uses the eval run id saved in
+  `<out>/gateway_eval_run.json`; a budget stop leaves the eval run open so a re-run can finish it. Gateway-only end states
+  (`gateway_restart`, `timeout`) are scored as `provider_error`. Incomplete gold is refused before any model call.
+  Tested in `gateway/tests/test_eval_gateway_mode.py` (asserts identical records vs direct mode).
+- `scripts/replay.py` + `dashboard/public/replay/` — **replay dataset**: `record` asks dev-split golden questions through a live gateway,
+  `export` writes runs, spans and configs in the dashboard's static layout (no eval data; secrets scan on output). The dashboard reads
+  `dataset`/`dataPath` from `config.json` (`config.replay.json` -> `recorded`, banner and Overview/Evals copy change accordingly).
+- `scripts/gold_candidates.py` — **EV-03 gold-candidate generator**: `golden_v1_spec.yaml` (questions + what they pin) + SEC XBRL
+  companyfacts -> DRAFT cases and a verification worksheet. It can never emit a verified case (asserted). Multi-hop gold is the
+  percentage-point *difference* between the two sides so both must be retrieved (a "winner's value" gold lets a model that
+  already knows the winner look up one number); pairs closer than 2 pp are rejected. Not covered yet: restated-figure and
+  amended-filing traps (the 2021-2025 facts used show no restatements), and ambiguity in non-calendar fiscal labels.
 - **Case-level pass = strict majority of repeats; a tie fails.** (Why: one lucky sample shouldn't count.)
 - `cli.py` — `agentlens-eval validate-dataset | run | report | compare`. `run` flags include `--budget-usd`, `--repeats`,
   `--split`, `--limit`, `--verified-only`, `--gate --baseline`. Exit code 3 = budget stopped the run.
@@ -245,7 +260,7 @@ goes one level up: gateway + agent + the real calculator MCP subprocess + Postgr
 
 - **OPS-07** fill `config/pricing.yaml` from the provider pricing page (with as-of date).
 - **TL-04** run the EDGAR tools against real SEC data and fix what breaks.
-- **EV-02** author and hand-verify the golden set.
+- **EV-02** hand-verify the golden set: 80 draft candidates and a worksheet are ready (`evals/datasets/golden_v1_*`); 0 verified.
 - **AG-10** one live Anthropic call to check the adapter.
-- Build and run the Docker images; run the dashboard against the live gateway (`docs/RUNNING.md` §4); EV-10 (gateway-mode eval runner).
+- Build and run the Docker images; run the dashboard against the live gateway (`docs/RUNNING.md` §4).
 - Only then: real eval run → real numbers → README table → LinkedIn. Resume bullets must use measured numbers only.

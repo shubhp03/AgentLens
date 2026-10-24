@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pytest
-from agentlens_agent.mcp_registry import McpToolRegistry, _target
+from agentlens_agent.mcp_registry import FORWARDED_ENV, McpToolRegistry, _target
 from mcp.server.mcpserver import MCPServer
 
 
@@ -87,10 +87,20 @@ async def test_reconnects_after_session_dies() -> None:
 def test_stdio_target_forwards_tool_server_env(monkeypatch: pytest.MonkeyPatch) -> None:
     """Regression: the SDK does not pass our environment to stdio servers; SEC_USER_AGENT must be forwarded."""
     monkeypatch.setenv("SEC_USER_AGENT", "Jane Doe jane@example.com")
-    monkeypatch.delenv("EDGAR_CACHE_DIR", raising=False)
+    for k in FORWARDED_ENV:
+        if k != "SEC_USER_AGENT":
+            monkeypatch.delenv(k, raising=False)
     params = _target("stdio:edgar-mcp --flag")
     assert params.command == "edgar-mcp" and params.args == ["--flag"]
     assert params.env == {"SEC_USER_AGENT": "Jane Doe jane@example.com"}
-    monkeypatch.delenv("SEC_USER_AGENT")
+    monkeypatch.setenv("HTTPS_PROXY", "http://proxy:3128")
+    monkeypatch.setenv("SSL_CERT_FILE", "/etc/ca.pem")
+    assert _target("stdio:edgar-mcp").env == {
+        "SEC_USER_AGENT": "Jane Doe jane@example.com",
+        "HTTPS_PROXY": "http://proxy:3128",
+        "SSL_CERT_FILE": "/etc/ca.pem",
+    }
+    for k in ("SEC_USER_AGENT", "HTTPS_PROXY", "SSL_CERT_FILE"):
+        monkeypatch.delenv(k)
     assert _target("stdio:calc-mcp").env is None
     assert _target("http://x:1/mcp") == "http://x:1/mcp"

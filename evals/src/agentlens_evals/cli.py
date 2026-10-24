@@ -13,6 +13,7 @@ import argparse
 import asyncio
 import hashlib
 import json
+import os
 import subprocess
 import sys
 from collections import defaultdict
@@ -24,6 +25,7 @@ from agentlens_agent.events import Usage
 
 from agentlens_evals.case import load_dataset
 from agentlens_evals.compare import GateConfig, compare_case_outcomes, gate
+from agentlens_evals.gateway import GatewayClient, GatewayError, incomplete_gold
 from agentlens_evals.report import case_outcomes, render_report, summarize
 from agentlens_evals.runner import RunRecord, meta_path, run_eval, write_meta
 
@@ -136,9 +138,14 @@ async def _run(args: argparse.Namespace) -> int:
         return 2
 
     config = load_agent_config(args.config)
-    pricing = PricingTable.from_yaml(args.pricing)
     out = Path(args.out or f"eval-runs/{args.label}")
     results = out / "results.jsonl"
+
+    gateway_url = os.environ.get("AGENTLENS_GATEWAY_URL")
+    if gateway_url:
+        return await _run_gateway(args, gateway_url, cases, config, dataset, out)
+
+    pricing = PricingTable.from_yaml(args.pricing)
 
     servers = mcp_servers_from_env() or {
         "edgar": "stdio:edgar-mcp",
@@ -187,6 +194,11 @@ async def _run(args: argparse.Namespace) -> int:
         if config.tool_allowlist:
             await registry.aclose()
 
+    return _finish(args, cases, outcome, out)
+
+
+def _finish(args: argparse.Namespace, cases: list, outcome, out: Path) -> int:
+    """Report, budget warning and regression gate: identical for direct and gateway mode."""
     report = _write_report(out, cases)
     print(f"\nreport: {report}   spent: ${outcome.spent_usd:.4f} of ${args.budget_usd:.2f}")
     if outcome.skipped_for_budget:
@@ -196,9 +208,13 @@ async def _run(args: argparse.Namespace) -> int:
             file=sys.stderr,
         )
         return 3
+    return _gate_exit(args, cases, outcome)[0]
 
+
+def _gate_exit(args: argparse.Namespace, cases: list, outcome) -> tuple[int, bool | None]:
+    """(exit code, gate_passed). gate_passed is None when --gate was not requested."""
     if not args.gate:
-        return 0
+        return 0, None
     base_cmp = None
     if args.baseline:
         base_cmp = compare_case_outcomes(
@@ -213,7 +229,135 @@ async def _run(args: argparse.Namespace) -> int:
     )
     for f in failures:
         print(f"GATE FAIL: {f}", file=sys.stderr)
-    return 1 if failures else 0
+    return (1 if failures else 0), not failures
+
+
+async def _run_gateway(
+    args: argparse.Namespace, url: str, cases: list, config, dataset: Path, out: Path
+) -> int:
+    """EV-10. The gateway runs the agent (and stores runs + spans); we score locally and publish the results."""
+    from agentlens_agent.config import load_system_prompt
+
+    key = os.environ.get("ADMIN_API_KEY")
+    if not key:
+        print("gateway mode needs ADMIN_API_KEY in the environment", file=sys.stderr)
+        return 2
+    bad = incomplete_gold(cases)
+    if bad:  # fail before any model call; the scorer would raise on these after the spend
+        print(
+            f"{len(bad)} case(s) have incomplete gold and cannot be scored: {', '.join(bad[:5])}"
+            f"{' ...' if len(bad) > 5 else ''}\nFill gold from the filing (status=verified) or use --verified-only.",
+            file=sys.stderr,
+        )
+        return 2
+
+    results = out / "results.jsonl"
+    _, prompt_sha = load_system_prompt(config.system_prompt_id)
+    client = GatewayClient(url, key)
+    try:
+        try:
+            dataset_id = await client.register_dataset(dataset, cases)
+            config_id = await client.register_config(config, prompt_sha)
+            eval_run_id = await _eval_run_id(
+                client, out, dataset_id, config_id, args.label, args.repeats
+            )
+        except (GatewayError, OSError) as e:
+            print(f"gateway setup failed: {e}", file=sys.stderr)
+            return 2
+        print(f"gateway eval run {eval_run_id}")
+        write_meta(
+            results,
+            {
+                "label": args.label,
+                "date": datetime.now(UTC).isoformat(timespec="seconds"),
+                "dataset": str(dataset),
+                "dataset_sha256": _sha256(dataset),
+                "config": config.name,
+                "config_sha256": hashlib.sha256(config.model_dump_json().encode()).hexdigest(),
+                "prompt_sha256": prompt_sha,
+                "model": f"{config.provider}:{config.model}",
+                "pricing_as_of": "gateway",
+                "git_sha": _git_sha(),
+                "repeats": args.repeats,
+                "gateway_url": url,
+                "gateway_eval_run_id": eval_run_id,
+            },
+        )
+
+        def progress(r: RunRecord) -> None:
+            mark = "PASS" if r.passed else f"FAIL[{r.failure_category}]"
+            print(f"  {r.case_key}#{r.repeat} {mark} ${r.cost_usd:.4f}", flush=True)
+
+        outcome = await run_eval(
+            cases,
+            client.run_factory(config_id, eval_run_id),
+            repeats=args.repeats,
+            budget_usd=args.budget_usd,
+            per_run_cap_usd=config.max_cost_usd,
+            results_path=results,
+            trace_dir=None,  # the gateway already stores every span; no second copy on disk
+            concurrency=args.concurrency,
+            on_record=progress,
+        )
+        code, gate_passed = _gate_exit(args, cases, outcome)
+        try:
+            unpublished = await client.post_results(eval_run_id, outcome.records)
+            if (
+                not outcome.skipped_for_budget
+            ):  # a budget stop leaves the eval run open so a re-run can finish it
+                await client.complete(
+                    eval_run_id, "failed" if unpublished else "completed", gate_passed
+                )
+        except GatewayError as e:
+            print(f"publishing results failed: {e}", file=sys.stderr)
+            return 2
+        if unpublished:
+            print(
+                f"WARNING: {unpublished} result(s) have no gateway run (the run could not be created) "
+                "and are only in results.jsonl",
+                file=sys.stderr,
+            )
+    finally:
+        await client.aclose()
+
+    report = _write_report(out, cases)
+    print(f"\nreport: {report}   spent: ${outcome.spent_usd:.4f} of ${args.budget_usd:.2f}")
+    if outcome.skipped_for_budget:
+        print(
+            f"WARNING: budget reached; {outcome.skipped_for_budget} runs were NOT executed. "
+            "Re-run the same command with a larger --budget-usd to resume.",
+            file=sys.stderr,
+        )
+        return 3
+    return 2 if unpublished else code
+
+
+def _read_state(path: Path) -> dict:
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def _write_state(path: Path, state: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(state))
+
+
+async def _eval_run_id(
+    client: GatewayClient, out: Path, dataset_id: str, config_id: str, label: str, repeats: int
+) -> str:
+    """Resume support: re-running the same command in the same --out dir continues the same gateway eval run."""
+    state = out / "gateway_eval_run.json"
+    saved = await asyncio.to_thread(_read_state, state)
+    if saved.get("dataset_id") == dataset_id and saved.get("config_id") == config_id:
+        return saved["eval_run_id"]
+    eval_run_id = await client.create_eval_run(
+        dataset_id, config_id, label=label, git_sha=_git_sha(), repeats=repeats
+    )
+    await asyncio.to_thread(
+        _write_state,
+        state,
+        {"eval_run_id": eval_run_id, "dataset_id": dataset_id, "config_id": config_id},
+    )
+    return eval_run_id
 
 
 def cmd_run(args: argparse.Namespace) -> int:

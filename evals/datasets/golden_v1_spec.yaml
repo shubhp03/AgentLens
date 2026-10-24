@@ -1,0 +1,144 @@
+# Spec for the gold-CANDIDATE generator (scripts/gold_candidates.py, requirement EV-03).
+# This file holds the QUESTIONS and what they pin down; the generator fills in candidate values from SEC XBRL.
+# Everything it emits is status: draft. A human must read each value in the filing and flip it to verified (EV-02).
+#
+# Period labels: FYyyyy = the company's own "fiscal yyyy", which for every company below is the calendar year the fiscal year
+# ENDS in (e.g. NVIDIA fiscal 2024 ended 2024-01-28). Questions also state the exact period end date to remove ambiguity.
+# Concepts are listed in priority order; the first one that has an annual (or instant) fact for the period is used, and the
+# generator records which one it used (a deliberate trap: the same company can switch concepts between years).
+
+companies:
+  AAPL:  {name: Apple}
+  MSFT:  {name: Microsoft}
+  GOOGL: {name: Alphabet}
+  AMZN:  {name: Amazon}
+  NVDA:  {name: NVIDIA}
+  WMT:   {name: Walmart}
+  COST:  {name: Costco}
+  ORCL:  {name: Oracle}
+  TSLA:  {name: Tesla}
+  KO:    {name: Coca-Cola}
+  DIS:   {name: Disney}
+  PG:    {name: Procter & Gamble}
+  NKE:   {name: Nike}
+
+metrics:
+  revenue:       {label: total revenues,                       flow: true,  concepts: [Revenues, RevenueFromContractWithCustomerExcludingAssessedTax]}
+  net_sales:     {label: total net sales,                      flow: true,  concepts: [RevenueFromContractWithCustomerExcludingAssessedTax, Revenues]}
+  net_income:    {label: net income attributable to the company's shareholders, flow: true, concepts: [NetIncomeLoss]}
+  op_income:     {label: operating income,                     flow: true,  concepts: [OperatingIncomeLoss]}
+  gross_profit:  {label: gross profit,                         flow: true,  concepts: [GrossProfit]}
+  op_cash_flow:  {label: net cash provided by operating activities, flow: true, concepts: [NetCashProvidedByUsedInOperatingActivities]}
+  total_assets:  {label: total assets,                         flow: false, concepts: [Assets]}
+
+# kinds: lookup | growth | margin | ratio | higher_margin | faster_growth | cross_period_margin
+cases:
+  # ---------------- lookup (20) ----------------
+  - {key: lookup-aapl-net-sales-fy2023,   kind: lookup, ticker: AAPL,  metric: net_sales,    end: "2023-09-30", fy: FY2023, difficulty: easy}
+  - {key: lookup-msft-revenue-fy2024,     kind: lookup, ticker: MSFT,  metric: net_sales,    end: "2024-06-30", fy: FY2024, difficulty: easy}
+  - {key: lookup-googl-revenue-fy2022,    kind: lookup, ticker: GOOGL, metric: revenue,      end: "2022-12-31", fy: FY2022, difficulty: medium, tags: [concept-variant]}
+  - {key: lookup-googl-revenue-fy2023,    kind: lookup, ticker: GOOGL, metric: revenue,      end: "2023-12-31", fy: FY2023, difficulty: easy,   tags: [share-class]}
+  - {key: lookup-nvda-revenue-fy2024,     kind: lookup, ticker: NVDA,  metric: revenue,      end: "2024-01-28", fy: FY2024, difficulty: medium, tags: [non-calendar-fy]}
+  - {key: lookup-wmt-revenue-fy2024,      kind: lookup, ticker: WMT,   metric: revenue,      end: "2024-01-31", fy: FY2024, difficulty: hard,   tags: [non-calendar-fy, concept-variant]}
+  - {key: lookup-cost-net-income-fy2023,  kind: lookup, ticker: COST,  metric: net_income,   end: "2023-09-03", fy: FY2023, difficulty: medium, tags: [53-week-year]}
+  - {key: lookup-orcl-revenue-fy2024,     kind: lookup, ticker: ORCL,  metric: revenue,      end: "2024-05-31", fy: FY2024, difficulty: medium, tags: [non-calendar-fy]}
+  - {key: lookup-tsla-net-income-fy2023,  kind: lookup, ticker: TSLA,  metric: net_income,   end: "2023-12-31", fy: FY2023, difficulty: medium}
+  - {key: lookup-ko-op-income-fy2023,     kind: lookup, ticker: KO,    metric: op_income,    end: "2023-12-31", fy: FY2023, difficulty: easy}
+  - {key: lookup-dis-total-assets-fy2023, kind: lookup, ticker: DIS,   metric: total_assets, end: "2023-09-30", fy: FY2023, difficulty: easy,   tags: [balance-sheet]}
+  - {key: lookup-pg-net-income-fy2024,    kind: lookup, ticker: PG,    metric: net_income,   end: "2024-06-30", fy: FY2024, difficulty: medium, tags: [non-calendar-fy]}
+  - {key: lookup-amzn-op-income-fy2023,   kind: lookup, ticker: AMZN,  metric: op_income,    end: "2023-12-31", fy: FY2023, difficulty: easy}
+  - {key: lookup-aapl-total-assets-fy2024, kind: lookup, ticker: AAPL, metric: total_assets, end: "2024-09-28", fy: FY2024, difficulty: easy,   tags: [balance-sheet]}
+  - {key: lookup-msft-op-cash-flow-fy2023, kind: lookup, ticker: MSFT, metric: op_cash_flow, end: "2023-06-30", fy: FY2023, difficulty: easy}
+  - {key: lookup-nvda-gross-profit-fy2025, kind: lookup, ticker: NVDA, metric: gross_profit, end: "2025-01-26", fy: FY2025, difficulty: medium, tags: [non-calendar-fy]}
+  - {key: lookup-nke-net-income-fy2024,   kind: lookup, ticker: NKE,   metric: net_income,   end: "2024-05-31", fy: FY2024, difficulty: medium, tags: [non-calendar-fy]}
+  - {key: lookup-amzn-revenue-fy2022,     kind: lookup, ticker: AMZN,  metric: net_sales,    end: "2022-12-31", fy: FY2022, difficulty: easy}
+  - {key: lookup-ko-revenue-fy2022,       kind: lookup, ticker: KO,    metric: revenue,      end: "2022-12-31", fy: FY2022, difficulty: easy}
+  - {key: lookup-dis-revenue-fy2024,      kind: lookup, ticker: DIS,   metric: revenue,      end: "2024-09-28", fy: FY2024, difficulty: medium, tags: [52-week-year]}
+
+  # ---------------- calc: growth (10) ----------------
+  - {key: calc-aapl-growth-fy23,  kind: growth, ticker: AAPL, metric: net_sales, prev_end: "2022-09-24", end: "2023-09-30", fy: FY2023, difficulty: medium}
+  - {key: calc-msft-growth-fy24,  kind: growth, ticker: MSFT, metric: net_sales, prev_end: "2023-06-30", end: "2024-06-30", fy: FY2024, difficulty: medium}
+  - {key: calc-nvda-growth-fy24,  kind: growth, ticker: NVDA, metric: revenue,   prev_end: "2023-01-29", end: "2024-01-28", fy: FY2024, difficulty: medium, tags: [non-calendar-fy]}
+  - {key: calc-wmt-growth-fy24,   kind: growth, ticker: WMT,  metric: revenue,   prev_end: "2023-01-31", end: "2024-01-31", fy: FY2024, difficulty: medium, tags: [non-calendar-fy]}
+  - {key: calc-tsla-growth-fy23,  kind: growth, ticker: TSLA, metric: revenue,   prev_end: "2022-12-31", end: "2023-12-31", fy: FY2023, difficulty: easy}
+  - {key: calc-amzn-growth-fy23,  kind: growth, ticker: AMZN, metric: net_sales, prev_end: "2022-12-31", end: "2023-12-31", fy: FY2023, difficulty: easy}
+  - {key: calc-orcl-growth-fy24,  kind: growth, ticker: ORCL, metric: revenue,   prev_end: "2023-05-31", end: "2024-05-31", fy: FY2024, difficulty: medium, tags: [non-calendar-fy]}
+  - {key: calc-cost-growth-fy23,  kind: growth, ticker: COST, metric: revenue,   prev_end: "2022-08-28", end: "2023-09-03", fy: FY2023, difficulty: hard,   tags: [53-week-year]}
+  - {key: calc-ko-growth-fy23,    kind: growth, ticker: KO,   metric: revenue,   prev_end: "2022-12-31", end: "2023-12-31", fy: FY2023, difficulty: easy}
+  - {key: calc-dis-growth-fy23,   kind: growth, ticker: DIS,  metric: revenue,   prev_end: "2022-10-01", end: "2023-09-30", fy: FY2023, difficulty: medium}
+
+  # ---------------- calc: margin (6) and ratio (4) ----------------
+  - {key: calc-aapl-gross-margin-fy23,  kind: margin, ticker: AAPL, num: gross_profit, den: net_sales, margin_name: gross margin,     end: "2023-09-30", fy: FY2023, difficulty: medium}
+  - {key: calc-msft-op-margin-fy24,     kind: margin, ticker: MSFT, num: op_income,    den: net_sales, margin_name: operating margin, end: "2024-06-30", fy: FY2024, difficulty: medium}
+  - {key: calc-nvda-op-margin-fy24,     kind: margin, ticker: NVDA, num: op_income,    den: revenue,   margin_name: operating margin, end: "2024-01-28", fy: FY2024, difficulty: medium, tags: [non-calendar-fy]}
+  - {key: calc-amzn-op-margin-fy23,     kind: margin, ticker: AMZN, num: op_income,    den: net_sales, margin_name: operating margin, end: "2023-12-31", fy: FY2023, difficulty: medium}
+  - {key: calc-tsla-op-margin-fy23,     kind: margin, ticker: TSLA, num: op_income,    den: revenue,   margin_name: operating margin, end: "2023-12-31", fy: FY2023, difficulty: medium}
+  - {key: calc-cost-net-margin-fy23,    kind: margin, ticker: COST, num: net_income,   den: revenue,   margin_name: net margin,       end: "2023-09-03", fy: FY2023, difficulty: hard, tags: [53-week-year]}
+  - {key: calc-aapl-cfo-to-ni-fy23,     kind: ratio, ticker: AAPL,  num: op_cash_flow, den: net_income, ratio_name: "ratio of net cash provided by operating activities to net income", end: "2023-09-30", fy: FY2023, difficulty: medium}
+  - {key: calc-msft-cfo-to-ni-fy24,     kind: ratio, ticker: MSFT,  num: op_cash_flow, den: net_income, ratio_name: "ratio of net cash provided by operating activities to net income", end: "2024-06-30", fy: FY2024, difficulty: medium}
+  - {key: calc-googl-cfo-to-ni-fy23,    kind: ratio, ticker: GOOGL, num: op_cash_flow, den: net_income, ratio_name: "ratio of net cash provided by operating activities to net income", end: "2023-12-31", fy: FY2023, difficulty: medium, tags: [share-class]}
+  - {key: calc-orcl-cfo-to-ni-fy24,     kind: ratio, ticker: ORCL,  num: op_cash_flow, den: net_income, ratio_name: "ratio of net cash provided by operating activities to net income", end: "2024-05-31", fy: FY2024, difficulty: medium, tags: [non-calendar-fy]}
+
+  # ---------------- multi_hop (14) ----------------
+  - {key: multihop-opmargin-googl-msft-fy23, kind: higher_margin, num: op_income, margin_name: operating margin, fy: FY2023, difficulty: hard,
+     a: {ticker: GOOGL, den: revenue,   end: "2023-12-31"}, b: {ticker: MSFT, den: net_sales, end: "2023-06-30"}}
+  - {key: multihop-opmargin-aapl-msft-fy23,  kind: higher_margin, num: op_income, margin_name: operating margin, fy: FY2023, difficulty: hard,
+     a: {ticker: AAPL, den: net_sales,  end: "2023-09-30"}, b: {ticker: MSFT, den: net_sales, end: "2023-06-30"}}
+  - {key: multihop-opmargin-nvda-msft-fy24,  kind: higher_margin, num: op_income, margin_name: operating margin, fy: FY2024, difficulty: hard,
+     a: {ticker: NVDA, den: revenue,    end: "2024-01-28"}, b: {ticker: MSFT, den: net_sales, end: "2024-06-30"}, tags: [non-calendar-fy]}
+  - {key: multihop-opmargin-tsla-ko-fy23,    kind: higher_margin, num: op_income, margin_name: operating margin, fy: FY2023, difficulty: hard,
+     a: {ticker: TSLA, den: revenue,    end: "2023-12-31"}, b: {ticker: KO,   den: revenue,   end: "2023-12-31"}}
+  - {key: multihop-opmargin-orcl-msft-fy24,  kind: higher_margin, num: op_income, margin_name: operating margin, fy: FY2024, difficulty: hard,
+     a: {ticker: ORCL, den: revenue,    end: "2024-05-31"}, b: {ticker: MSFT, den: net_sales, end: "2024-06-30"}, tags: [non-calendar-fy]}
+  - {key: multihop-opmargin-amzn-wmt-fy23,   kind: higher_margin, num: op_income, margin_name: operating margin, fy: FY2023, difficulty: hard,
+     a: {ticker: AMZN, den: net_sales,  end: "2023-12-31"}, b: {ticker: WMT,  den: revenue,   end: "2024-01-31"}, tags: [non-calendar-fy]}
+  - {key: multihop-opmargin-dis-ko-fy23,     kind: higher_margin, num: op_income, margin_name: operating margin, fy: FY2023, difficulty: hard,
+     a: {ticker: DIS, den: revenue,     end: "2023-09-30"}, b: {ticker: KO,   den: revenue,   end: "2023-12-31"}}
+  - {key: multihop-growth-aapl-msft-fy23,    kind: faster_growth, metric: net_sales, fy: FY2023, difficulty: hard,
+     a: {ticker: AAPL, prev_end: "2022-09-24", end: "2023-09-30"}, b: {ticker: MSFT, prev_end: "2022-06-30", end: "2023-06-30"}}
+  - {key: multihop-growth-nvda-orcl-fy24,    kind: faster_growth, metric: revenue, fy: FY2024, difficulty: hard,
+     a: {ticker: NVDA, prev_end: "2023-01-29", end: "2024-01-28"}, b: {ticker: ORCL, prev_end: "2023-05-31", end: "2024-05-31"}, tags: [non-calendar-fy]}
+  - {key: multihop-growth-amzn-googl-fy23,   kind: faster_growth, metric: revenue, fy: FY2023, difficulty: hard,
+     a: {ticker: AMZN, prev_end: "2022-12-31", end: "2023-12-31", metric: net_sales}, b: {ticker: GOOGL, prev_end: "2022-12-31", end: "2023-12-31"}, tags: [concept-variant]}
+  - {key: multihop-growth-tsla-ko-fy23,      kind: faster_growth, metric: revenue, fy: FY2023, difficulty: hard,
+     a: {ticker: TSLA, prev_end: "2022-12-31", end: "2023-12-31"}, b: {ticker: KO, prev_end: "2022-12-31", end: "2023-12-31"}}
+  - {key: multihop-xperiod-msft-opmargin,    kind: cross_period_margin, ticker: MSFT, num: op_income, den: net_sales, margin_name: operating margin, difficulty: hard,
+     prev: {end: "2023-06-30", fy: FY2023}, cur: {end: "2024-06-30", fy: FY2024}}
+  - {key: multihop-xperiod-tsla-grossmargin, kind: cross_period_margin, ticker: TSLA, num: gross_profit, den: revenue, margin_name: gross margin, difficulty: hard,
+     prev: {end: "2022-12-31", fy: FY2022}, cur: {end: "2023-12-31", fy: FY2023}}
+  - {key: multihop-xperiod-nvda-grossmargin, kind: cross_period_margin, ticker: NVDA, num: gross_profit, den: revenue, margin_name: gross margin, difficulty: hard,
+     prev: {end: "2023-01-29", fy: FY2023}, cur: {end: "2024-01-28", fy: FY2024}, tags: [non-calendar-fy]}
+
+# ---------------- text_extract (12): question + where to look. must_contain is deliberately EMPTY: a human reads the
+# filing text and writes the exact phrases a correct answer must contain. The generator only records the 10-K accession.
+text_cases:
+  - {key: text-msft-segments-fy2024,    ticker: MSFT,  end: "2024-06-30", fy: FY2024, item: "1",  difficulty: medium, q: "In Microsoft's 10-K for the fiscal year ended June 30, 2024, what are the company's reportable segments?"}
+  - {key: text-aapl-segments-fy2023,    ticker: AAPL,  end: "2023-09-30", fy: FY2023, item: "1",  difficulty: medium, q: "In Apple's 10-K for the fiscal year ended September 30, 2023, what are the company's reportable segments?"}
+  - {key: text-amzn-segments-fy2023,    ticker: AMZN,  end: "2023-12-31", fy: FY2023, item: "1",  difficulty: medium, q: "In Amazon's 10-K for 2023, what are the company's reportable segments?"}
+  - {key: text-googl-segments-fy2023,   ticker: GOOGL, end: "2023-12-31", fy: FY2023, item: "1",  difficulty: medium, q: "In Alphabet's 10-K for 2023, what are the company's reportable segments?"}
+  - {key: text-tsla-segments-fy2023,    ticker: TSLA,  end: "2023-12-31", fy: FY2023, item: "7",  difficulty: medium, q: "In Tesla's 10-K for 2023, what are the company's two reportable segments?"}
+  - {key: text-nvda-segments-fy2024,    ticker: NVDA,  end: "2024-01-28", fy: FY2024, item: "1",  difficulty: medium, q: "In NVIDIA's 10-K for the fiscal year ended January 28, 2024, what are the company's two reportable segments?"}
+  - {key: text-wmt-segments-fy2024,     ticker: WMT,   end: "2024-01-31", fy: FY2024, item: "1",  difficulty: medium, q: "In Walmart's 10-K for the fiscal year ended January 31, 2024, what are the company's reportable segments?"}
+  - {key: text-dis-segments-fy2023,     ticker: DIS,   end: "2023-09-30", fy: FY2023, item: "1",  difficulty: medium, q: "In Disney's 10-K for the fiscal year ended September 30, 2023, what are the company's reportable segments?"}
+  - {key: text-ko-risk-factors-fy2023,  ticker: KO,    end: "2023-12-31", fy: FY2023, item: "1A", difficulty: hard,   q: "In Coca-Cola's 10-K for 2023, Item 1A, what does the company say about obesity-related concerns as a risk?"}
+  - {key: text-pg-employees-fy2024,     ticker: PG,    end: "2024-06-30", fy: FY2024, item: "1",  difficulty: easy,   q: "In Procter & Gamble's 10-K for the fiscal year ended June 30, 2024, approximately how many employees does the company report?"}
+  - {key: text-cost-warehouses-fy2023,  ticker: COST,  end: "2023-09-03", fy: FY2023, item: "2",  difficulty: easy,   q: "In Costco's 10-K for the fiscal year ended September 3, 2023, how many warehouses does the company report operating in total?"}
+  - {key: text-orcl-segments-fy2024,    ticker: ORCL,  end: "2024-05-31", fy: FY2024, item: "1",  difficulty: medium, q: "In Oracle's 10-K for the fiscal year ended May 31, 2024, which businesses does the company report as its operating segments?"}
+
+# ---------------- unanswerable (14): correct behaviour is to abstain. No source data is involved, so these are authored here.
+# (They still need a human to confirm that nothing in the SEC tools' reach can answer them.)
+authored:
+  - {key: unans-tsla-revenue-fy2030,      category: unanswerable, difficulty: easy,   q: "What will Tesla's total revenue be in fiscal year 2030?", tags: [future-data]}
+  - {key: unans-msft-revenue-fy2031,      category: unanswerable, difficulty: easy,   q: "What will Microsoft report as total revenue for the fiscal year ending June 30, 2031?", tags: [future-data]}
+  - {key: unans-aapl-eps-q4-2030,         category: unanswerable, difficulty: easy,   q: "What will Apple's diluted earnings per share be in its fourth fiscal quarter of 2030?", tags: [future-data]}
+  - {key: unans-missing-company,          category: unanswerable, difficulty: easy,   q: "What was the company's revenue last year?", tags: [underspecified]}
+  - {key: unans-which-company-profit,     category: unanswerable, difficulty: easy,   q: "How much profit did it make in the most recent quarter?", tags: [underspecified]}
+  - {key: unans-spacex-revenue,           category: unanswerable, difficulty: medium, q: "What was SpaceX's total revenue for fiscal year 2023 according to its 10-K?", tags: [private-company]}
+  - {key: unans-openai-net-income,        category: unanswerable, difficulty: medium, q: "What was OpenAI's net income in its most recent 10-K?", tags: [private-company]}
+  - {key: unans-aapl-iphone-units-fy2023, category: unanswerable, difficulty: medium, q: "How many iPhone units did Apple sell in fiscal year 2023, according to its 10-K?", tags: [not-disclosed]}
+  - {key: unans-tsla-cybertruck-margin,   category: unanswerable, difficulty: medium, q: "What was Tesla's gross margin on the Cybertruck specifically in 2023, according to its 10-K?", tags: [not-disclosed]}
+  - {key: unans-best-investment,          category: unanswerable, difficulty: easy,   q: "Based on their filings, which of Apple, Microsoft or Alphabet will be the best stock to buy next year?", tags: [opinion-forecast]}
+  - {key: unans-ceo-private-email,        category: unanswerable, difficulty: easy,   q: "What is the personal email address of Amazon's chief executive officer?", tags: [non-public]}
+  - {key: unans-nonexistent-company,      category: unanswerable, difficulty: medium, q: "What was the total revenue of Zorblax Quantum Dynamics Inc. for fiscal year 2023?", tags: [nonexistent-company]}
+  - {key: unans-nvda-internal-forecast,   category: unanswerable, difficulty: medium, q: "What is NVIDIA's internal, unpublished revenue forecast for the next fiscal year?", tags: [non-public]}
+  - {key: unans-googl-fy2023-employee-salary, category: unanswerable, difficulty: hard, q: "What was the exact salary of Alphabet's median software engineer in 2023, according to its 10-K?", tags: [not-disclosed]}

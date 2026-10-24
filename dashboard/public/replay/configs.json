@@ -1,0 +1,25 @@
+[
+ {
+  "id": "f24ba066-a2ef-4fbb-943c-6e8eb3432bd5",
+  "name": "baseline",
+  "config_hash": "374f05d5334d21de2839a1a646bd005fa2d401f3d9c203bdd8fdd7b2baba5191",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "system_prompt_id": "system_v1",
+  "system_prompt_sha": "c1d789dad3b4e1663eea61b310f328fa47fcb733f349aa5ed758d65328e59c7f",
+  "temperature": 0.0,
+  "max_steps": 12,
+  "max_cost_usd": 0.5,
+  "max_output_tokens": 2048,
+  "tool_allowlist": [
+   "resolve_company",
+   "list_filings",
+   "search_xbrl_concepts",
+   "get_financial_facts",
+   "get_filing_section",
+   "calculate"
+  ],
+  "params": {},
+  "created_at": "2026-10-23T23:47:26.479202+00:00"
+ }
+]

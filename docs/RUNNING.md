@@ -44,12 +44,22 @@ cp config/pricing.example.yaml config/pricing.yaml
 uv run agentlens-eval validate-dataset evals/datasets/golden_v0.jsonl
 ```
 
+**Golden set candidates (EV-02/EV-03).** `evals/datasets/golden_v1_candidates.jsonl` holds 80 DRAFT cases (20 lookup, 20 calc, 14 multi_hop,
+12 text_extract, 14 unanswerable) generated from SEC XBRL by `scripts/gold_candidates.py` from `evals/datasets/golden_v1_spec.yaml`.
+None are verified. Work through `evals/datasets/golden_v1_worksheet.md`: open each filing, confirm the value, then set
+`status: verified` and `provenance.verified_by`. Text cases need you to write `must_contain`. Regenerate with
+`uv run python scripts/gold_candidates.py evals/datasets/golden_v1_spec.yaml evals/datasets/golden_v1_candidates.jsonl`
+(this overwrites hand edits, so verify in a copy or commit first). Only `--verified-only` runs count as results.
+
 **Pilot first (up to $2).** Proves the plumbing end to end before you invest in the golden set:
 ```bash
 uv run agentlens-eval run --dataset evals/datasets/golden_v0.jsonl \
   --config config/agents/baseline.yaml --repeats 1 --limit 3 --budget-usd 2 --label pilot
 # -> eval-runs/pilot/{results.jsonl, results.meta.json, traces/, report.md}
 ```
+**Known limitation (direct mode):** the seed dataset is all `draft` with empty gold, and the scorer raises on an incomplete expectation
+(`expected must be a complete numeric expectation`). So this command crashes after the first answered numeric case until
+gold is filled in. For a run-only pilot without gold, drive the agent factory directly and read the traces.
 Open a file in `eval-runs/pilot/traces/` to read the actual trace. This is also your **TL-04** live check of the EDGAR tools:
 expect to find and fix parsing problems on real filings — that is normal and is what the fixture tests are for.
 
@@ -62,7 +72,7 @@ export AGENTLENS_GATEWAY_URL=http://localhost:8080
 uv run agentlens-eval run --dataset evals/datasets/golden_v0.jsonl \
   --config config/agents/baseline.yaml --verified-only --repeats 1 --budget-usd 2 --label pilot-live
 ```
-Gateway mode keeps the same local report files and additionally registers the dataset/config/eval run, stores linked traces,
+Gateway mode (EV-10, enabled by `AGENTLENS_GATEWAY_URL`; needs `ADMIN_API_KEY`, no local pricing file) keeps the same local report files and additionally registers the dataset/config/eval run, stores linked traces,
 and uploads the per-case scores. Case expectations must be complete before execution; the CLI rejects incomplete numeric or
 text gold before making model calls. The seed dataset currently has no verified cases, so `--verified-only` will report
 `no cases to run` until you verify cases. Do not substitute draft gold values or use draft scores as published results.

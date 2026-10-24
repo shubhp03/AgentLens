@@ -1,0 +1,15 @@
+# Per-million-token USD prices. Copy to config/pricing.yaml (git-ignored) and verify against the provider's pricing page.
+# Keys are "provider:model" and must match config/agents/*.yaml. The loader rejects empty/zero prices on purpose.
+# Source: https://platform.claude.com/docs/en/about-claude/pricing
+as_of: "2026-10-23"
+models:
+  "anthropic:claude-sonnet-5-5":
+    input_usd_per_mtok: 2.0
+    output_usd_per_mtok: 10.0
+    cache_read_usd_per_mtok: 0.10
+  # Haiku 5.5 is priced higher for prompts over 100k tokens ($0.50 in / $2.50 out); this table has no tiers,
+  # so these are the <=100k rates and costs for longer prompts will be under-reported.
+  "anthropic:claude-haiku-5-5":
+    input_usd_per_mtok: 0.10
+    output_usd_per_mtok: 0.50
+    cache_read_usd_per_mtok: 0.01

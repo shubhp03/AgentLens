@@ -7,7 +7,11 @@ import { RuntimeConfigService } from './core/runtime-config';
   selector: 'app-root',
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   template: `
-    @if (demo) {
+    @if (demo && recorded) {
+      <div class="banner demo" role="note">
+        Replay: runs <strong>recorded from a live stack</strong> (real Claude calls, real SEC data). Read-only. Individual runs, not benchmark results.
+      </div>
+    } @else if (demo) {
       <div class="banner demo" role="note">
         Demo mode: recorded <strong>synthetic sample data</strong> about a fictional company. These are not benchmark results.
       </div>
@@ -42,7 +46,9 @@ import { RuntimeConfigService } from './core/runtime-config';
 export class App {
   protected readonly auth = inject(AuthService);
   private readonly router = inject(Router);
-  protected readonly demo = inject(RuntimeConfigService).value.demo;
+  private readonly cfg = inject(RuntimeConfigService).value;
+  protected readonly demo = this.cfg.demo;
+  protected readonly recorded = this.cfg.dataset === 'recorded';
 
   protected signOut(): void {
     this.auth.logout();

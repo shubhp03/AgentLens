@@ -68,15 +68,15 @@ Releases
 | ID | P | Requirement | AC | Owner | Status |
 |---|---|---|---|---|---|
 | EV-01 | P0 | Dataset schema + loader (JSONL), draft/verified states | `agentlens-eval validate-dataset` works; verified cases need provenance (`test_case_dataset.py`) | AI | ☑ |
-| EV-02 | P0 | **Author the golden set**: ≥60 verified cases (target 80) per distribution in EVAL_DESIGN §2 | Every verified case has provenance (accession/concept, date read, verified_by); periods pinned; unanswerables included | **You** | ☐ |
-| EV-03 | P1 | Gold-candidate generator: from ticker+concept+period emit a draft case from XBRL | Output validates against schema; always `status: draft` | AI | ☐ |
+| EV-02 | P0 | **Author the golden set**: ≥60 verified cases (target 80) per distribution in EVAL_DESIGN §2 | Every verified case has provenance (accession/concept, date read, verified_by); periods pinned; unanswerables included | **You** | ☐ (80 DRAFT candidates prepared in `golden_v1_candidates.jsonl` + `golden_v1_worksheet.md`; 0 verified; verification is the owner's job) |
+| EV-03 | P1 | Gold-candidate generator: from ticker+concept+period emit a draft case from XBRL | Output validates against schema; always `status: draft` — built: `scripts/gold_candidates.py` + spec `evals/datasets/golden_v1_spec.yaml`, tested in `evals/tests/test_gold_candidates.py` | AI | ☑ |
 | EV-04 | P0 | Deterministic scorers: numeric (unit/period), text, abstain, citation validity, numeric grounding, tool-use metrics | Unit tests incl. unit-scale and period edge cases | AI | ☑ |
 | EV-05 | P0 | Runner **direct mode**: dataset × config × repeats against the agent service; writes `results.jsonl` + traces | Bounded concurrency; `--budget-usd` aborts cleanly; resumable (skips completed case/repeat pairs) — implemented + tested; run with a real key to produce results | Both | ☑ |
 | EV-06 | P0 | **Failure classifier**: trace + answer + expected → `failure_category` per EVAL_DESIGN §5 | Rule table implemented; ≥1 unit test per category using synthetic traces; every failed result gets exactly one category — implemented + tested; run with a real key to produce results | **You** | ☑ |
 | EV-07 | P0 | Repeats and aggregation: case-level pass = strict majority; also report consistency (all repeats agree) | Matches `compare` conventions; tested — implemented + tested; run with a real key to produce results | Both | ☑ |
 | EV-08 | P0 | Report generator: markdown results table (pass rate ± CI, cost/success, p95, top failures) | Output pasted into README without hand-editing — implemented + tested; run with a real key to produce results | AI | ☑ |
 | EV-09 | P0 | Control arm: `no_tools` config in every report | Included by default in ablation runs | You | ◐ |
-| EV-10 | P1 | Gateway mode: runner posts datasets/configs/eval-runs/results via REST | Same results as direct mode on a smoke set — NOT built: runner is direct-mode only | AI | ☐ |
+| EV-10 | P1 | Gateway mode: runner posts datasets/configs/eval-runs/results via REST | Same results as direct mode on a smoke set — built; `gateway/tests/test_eval_gateway_mode.py` asserts identical RunRecords vs direct mode (real gateway + Postgres, scripted agent); live-checked on 2 abstain cases | AI | ☑ |
 | EV-11 | P1 | Regression gate (`--gate`): baseline paired test + absolute floors; exit code 1 on failure | Tested with synthetic baseline/candidate (`compare.gate`) | AI | ◐ |
 | EV-12 | P1 | Replay fixtures for CI: record LLM+tool I/O once, replay deterministically | CI eval-smoke runs offline, zero cost, deterministic | Both | ☐ |
 | EV-13 | P2 | LLM judge for `text_extract` with rubric; calibrated against ≥20 human labels (report agreement) | Agreement reported; judge never overrides deterministic scorers | Both | ☐ |
@@ -104,11 +104,11 @@ Releases
 ## F. Platform / DevOps
 | ID | P | Requirement | AC | Owner | Status |
 |---|---|---|---|---|---|
-| OPS-01 | P0 | `docker compose up` runs the whole stack | Fresh clone + `.env` → healthy stack; documented — compose validated with `docker compose config`; images NEVER built (no daemon in authoring sandbox); `make stack-smoke` proves the topology over real sockets | Both | ◐ |
+| OPS-01 | P0 | `docker compose up` runs the whole stack | Fresh clone + `.env` → healthy stack; documented — images BUILT and RUN (2026-10-24, manually, in the authoring sandbox): Postgres 16, edgar/calc MCP over streamable-http, agent, gateway and the dashboard's nginx stage ran as containers on host networking and answered a live question (NVIDIA revenue, $0.026). NOT verified: compose bridge networking/DNS, the dashboard's Node build stage inside Docker (npm failed in the sandbox network), the real `ghcr.io/astral-sh/uv` image (blocked). CI job `docker` added to cover those; never run on GitHub | Both | ◐ |
 | OPS-02 | P0 | CI: Python lint + tests + contract validation | Green on PR | AI | ☑ |
-| OPS-03 | P0 | CI: gateway tests + stack smoke (Python job), dashboard build | Green on PR — jobs defined; workflow has never run on GitHub | AI | ◐ |
+| OPS-03 | P0 | CI: gateway tests + stack smoke (Python job), dashboard build | Green on PR — jobs defined (python, dashboard, docker); workflow has never run on GitHub | AI | ◐ |
 | OPS-04 | P1 | Nightly live eval with budget + regression gate | Artifacts uploaded; fails the run on regression — workflow rewritten for direct mode; needs secrets + a verified golden set; never run | Both | ◐ |
-| OPS-05 | P1 | Deploy demo to a small VM behind TLS (Caddy) | Public URL serves replay mode; live mode key-gated — Pages workflow + `scripts/build_pages.sh` (verified under a subpath) and VM+Caddy files (`deploy/`, unrun); see docs/DEPLOY.md | Both | ☐ |
+| OPS-05 | P1 | Deploy demo to a small VM behind TLS (Caddy) | Public URL serves replay mode (replay of 8 REAL recorded runs built and browser-checked under a subpath; not yet deployed); live mode key-gated — Pages workflow + `scripts/build_pages.sh` (verified under a subpath) and VM+Caddy files (`deploy/`, unrun); see docs/DEPLOY.md | Both | ◐ |
 | OPS-06 | P0 | Commit `uv.lock`; pin Docker base/tool versions; enable dependency alerts | Reproducible builds | You | ☐ |
 | OPS-07 | P0 | `config/pricing.yaml` filled from provider pages with `as_of` date | Loader accepts it; date recorded in reports | You | ☐ |
 | OPS-08 | P0 | Employer-policy check before first public push (outside activity, IP, open source) | Written confirmation/notes kept privately — owner states personal learning project, employer indifferent; keep your own note | **You** | ☑ |

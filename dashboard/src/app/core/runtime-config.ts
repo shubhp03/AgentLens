@@ -5,11 +5,15 @@ import { firstValueFrom } from 'rxjs';
 export interface RuntimeConfig {
   /** Base URL of the gateway, e.g. http://localhost:8080 (empty = same origin, behind a proxy). */
   apiBaseUrl: string;
-  /** Demo mode serves recorded, synthetic sample data from /demo and never calls a gateway. */
+  /** Demo mode serves recorded JSON from `dataPath` and never calls a gateway. */
   demo: boolean;
+  /** What the recorded JSON is. `synthetic` = fictional companies (/demo); `recorded` = real runs captured from a live stack (/replay). */
+  dataset: 'synthetic' | 'recorded';
+  /** Folder under the site root that holds the recorded JSON. */
+  dataPath: string;
 }
 
-const DEFAULTS: RuntimeConfig = { apiBaseUrl: 'http://localhost:8080', demo: false };
+const DEFAULTS: RuntimeConfig = { apiBaseUrl: 'http://localhost:8080', demo: false, dataset: 'synthetic', dataPath: 'demo' };
 
 /** Loaded from /config.json at startup so one build can run anywhere (docker, demo site, local). */
 @Injectable({ providedIn: 'root' })

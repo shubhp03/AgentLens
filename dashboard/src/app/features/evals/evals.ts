@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
 import { AgentLensApi } from '../../core/api.service';
+import { RuntimeConfigService } from '../../core/runtime-config';
 import { fmtDateTime, fmtMs, fmtPct, fmtPctCi, fmtUsd, shortId } from '../../core/format';
 import { loadFrom } from '../../core/loadable';
 import { EvalRun } from '../../core/models';
@@ -31,7 +32,7 @@ const sortValue = (r: EvalRun, k: SortKey): number => {
         <button class="btn primary" type="button" [disabled]="selected().length !== 2" (click)="compare()">Compare selected ({{ selected().length }}/2)</button>
       </div>
 
-      <app-state [status]="data.status()" [error]="data.error()" [empty]="(data.data()?.length ?? 0) === 0" emptyText="No eval runs yet. Run agentlens-eval run … and publish the results." (retry)="data.reload()">
+      <app-state [status]="data.status()" [error]="data.error()" [empty]="(data.data()?.length ?? 0) === 0" [emptyText]="emptyText" (retry)="data.reload()">
         <div class="card">
           <div class="table-wrap">
             <table>
@@ -84,6 +85,9 @@ const sortValue = (r: EvalRun, k: SortKey): number => {
 })
 export class Evals {
   private readonly api = inject(AgentLensApi);
+  protected readonly emptyText = inject(RuntimeConfigService).value.dataset === 'recorded'
+    ? 'No scored eval runs yet. Numbers will be published here once the golden set has been verified by hand against the filings; unverified results are not shown.'
+    : 'No eval runs yet. Run agentlens-eval run … and publish the results.';
   private readonly router = inject(Router);
   protected readonly data = loadFrom(() => 0, () => this.api.listEvalRuns());
 

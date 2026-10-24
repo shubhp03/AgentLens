@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin, map } from 'rxjs';
 import { AgentLensApi } from '../../core/api.service';
+import { RuntimeConfigService } from '../../core/runtime-config';
 import { fmtMs, fmtPct, fmtUsd, shortId } from '../../core/format';
 import { loadFrom } from '../../core/loadable';
 import { StateView } from '../../shared/state-view';
@@ -12,24 +13,27 @@ import { StatusChip } from '../../shared/status-chip';
   imports: [RouterLink, StateView, StatusChip],
   template: `
     <div class="page">
-      <div class="page-head"><div><h1>Overview</h1><p>Today's activity, spend against the daily cap, and the latest baseline.</p></div></div>
+      <div class="page-head"><div><h1>Overview</h1>@if (replay) { <p>Real runs recorded from a live stack: the question, the agent's tool calls, the answer, and what each cost.</p> } @else { <p>Today's activity, spend against the daily cap, and the latest baseline.</p> }</div></div>
       <app-state [status]="data.status()" [error]="data.error()" (retry)="data.reload()">
         @let d = data.data();
         @if (d) {
           <div class="grid cols-4">
-            <div class="card stat"><div class="label">Runs today</div><div class="value">{{ d.overview.runs_today }}</div></div>
+            <div class="card stat"><div class="label">{{ replay ? 'Runs recorded' : 'Runs today' }}</div><div class="value">{{ d.overview.runs_today }}</div></div>
             <div class="card stat">
-              <div class="label">Spend today</div>
+              <div class="label">{{ replay ? 'Total spend' : 'Spend today' }}</div>
               <div class="value">{{ usd(d.overview.cost_today_usd) }}</div>
+              @if (!replay) {
               <div class="bar" [class.warn]="spendPct() >= 0.8" [class.bad]="spendPct() >= 1" role="progressbar" aria-label="Daily spend" [attr.aria-valuenow]="(spendPct() * 100).toFixed(0)" aria-valuemin="0" aria-valuemax="100">
                 <span [style.width.%]="min(spendPct() * 100, 100)"></span>
               </div>
               <div class="sub">of {{ usd(d.overview.daily_cap_usd) }} daily cap</div>
+              }
             </div>
             <div class="card stat">
               <div class="label">Latest baseline pass rate</div>
               <div class="value">{{ pct(d.overview.latest_baseline_pass_rate) }}</div>
-              <div class="sub"><a routerLink="/evals">All eval runs</a></div>
+              @if (replay) { <div class="sub">Not measured yet: waiting on the human-verified golden set. <a routerLink="/evals">Evals</a></div> }
+              @else { <div class="sub"><a routerLink="/evals">All eval runs</a></div> }
             </div>
           </div>
           <div class="card" style="margin-top:16px">
@@ -60,6 +64,8 @@ import { StatusChip } from '../../shared/status-chip';
 })
 export class Overview {
   private readonly api = inject(AgentLensApi);
+  /** A static replay of recorded runs: "today" and a daily cap would be misleading. */
+  protected readonly replay = inject(RuntimeConfigService).value.dataset === 'recorded';
   protected readonly data = loadFrom(
     () => 0,
     () =>
