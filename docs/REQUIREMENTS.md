@@ -108,7 +108,7 @@ Releases
 | OPS-02 | P0 | CI: Python lint + tests + contract validation | Green on PR | AI | ☑ |
 | OPS-03 | P0 | CI: gateway tests + stack smoke (Python job), dashboard build | Green on PR — jobs defined; workflow has never run on GitHub | AI | ◐ |
 | OPS-04 | P1 | Nightly live eval with budget + regression gate | Artifacts uploaded; fails the run on regression — workflow rewritten for direct mode; needs secrets + a verified golden set; never run | Both | ◐ |
-| OPS-05 | P1 | Deploy demo to a small VM behind TLS (Caddy) | Public URL serves replay mode; live mode key-gated — Pages workflow + `scripts/build_pages.sh` (verified under a subpath) and VM+Caddy files (`deploy/`, unrun); see docs/DEPLOY.md | Both | ☐ |
+| OPS-05 | P1 | Deploy demo to a small VM behind TLS (Caddy) | Public URL serves replay mode (replay of 8 REAL recorded runs built and browser-checked under a subpath; not yet deployed); live mode key-gated — Pages workflow + `scripts/build_pages.sh` (verified under a subpath) and VM+Caddy files (`deploy/`, unrun); see docs/DEPLOY.md | Both | ◐ |
 | OPS-06 | P0 | Commit `uv.lock`; pin Docker base/tool versions; enable dependency alerts | Reproducible builds | You | ☐ |
 | OPS-07 | P0 | `config/pricing.yaml` filled from provider pages with `as_of` date | Loader accepts it; date recorded in reports | You | ☐ |
 | OPS-08 | P0 | Employer-policy check before first public push (outside activity, IP, open source) | Written confirmation/notes kept privately — owner states personal learning project, employer indifferent; keep your own note | **You** | ☑ |

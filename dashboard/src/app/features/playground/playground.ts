@@ -19,7 +19,7 @@ const EXAMPLES = [
     <div class="page">
       <div class="page-head"><div><h1>Ask</h1><p>Send a question to the agent and watch its trace stream in live.</p></div></div>
       @if (api.demo) {
-        <div class="alert info" role="note">Demo mode is read-only. Running the agent needs a gateway, an API key and an LLM provider key.</div>
+        <div class="alert info" role="note">This site is read-only. Running the agent needs a gateway, an API key and an LLM provider key; browse the recorded runs instead.</div>
       }
       <div class="card">
         <app-state [status]="configs.status()" [error]="configs.error()" [empty]="(configs.data()?.length ?? 0) === 0" emptyText="No agent configs yet. Create one via the API (POST /api/v1/configs) first." (retry)="configs.reload()">

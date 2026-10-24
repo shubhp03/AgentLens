@@ -4,7 +4,7 @@ Pick by what you want people to see. Cost safety first: **never expose a live LL
 
 | Option | Shows | Cost | Backend? | Status |
 |---|---|---|---|---|
-| A. GitHub Pages | Dashboard on synthetic demo data (+ link to your real report) | $0 | none | **Build + deep links verified in a browser**; the workflow itself has not run |
+| A. GitHub Pages | Read-only **replay of real recorded runs** (real Claude + real SEC data), no backend (+ link to your real report) | $0 | none | **Build + deep links verified in a browser**; the workflow itself has not run |
 | B. One VM + Docker + Caddy (HTTPS) | Same demo site on your own domain | a few $/month | none | Compose files validated (`docker compose config`); never run |
 | C. Full stack on a VM | Live runs through the gateway | VM + LLM spend | gateway | Gateway tested; overlay validated with `docker compose config`; images never built or run |
 | D. Nightly eval in CI | Regression gate on real LLM runs | LLM spend (capped) | none | Workflow written; never run |
@@ -13,13 +13,19 @@ For a portfolio, **A + a screenshot/video + the real `report.md`** is the best e
 and bills; if you ever do C, keep live mode behind an API key with the daily cost cap on.
 
 ## A. GitHub Pages (recommended first deploy)
+What ships is `dashboard/public/replay/`: real runs captured from a live stack by `scripts/replay.py record` + `export`
+(see docs/RUNNING.md section 4 for the stack). It is individual runs, **not benchmark results**: the Evals pages stay empty
+until human-verified eval runs exist, and the site says so. The synthetic demo data is never shipped with it.
+Refresh the replay: bring up the stack, `ADMIN_API_KEY=... uv run python scripts/replay.py record` (spends a few cents; asks only
+dev-split golden questions) then `... replay.py export`, commit `dashboard/public/replay/`, push.
+`DATASET=synthetic bash scripts/build_pages.sh` builds the fictional-company demo instead.
 1. Push the repo to GitHub (public). **Before the first public push**, check no secrets are committed: `.env` and
    `config/pricing.yaml` are git-ignored; run `git status` and `git log -p | grep -i api_key` as a sanity check.
 2. Repo → Settings → Pages → Source: **GitHub Actions**.
 3. Push to `main` (touching `dashboard/**`) or run the `pages` workflow manually. URL: `https://<user>.github.io/<repo>/`.
 4. Local rehearsal: `BASE_HREF=/agentlens/ bash scripts/build_pages.sh` (the output keeps deep links working via `404.html`).
    Other static hosts (Netlify, Cloudflare Pages, S3): `BASE_HREF=/ bash scripts/build_pages.sh` and upload `dashboard/dist/dashboard/browser`.
-5. Label it honestly in the README: the data is synthetic.
+5. Label it honestly in the README: the replay is real recorded runs, not benchmark results.
 
 ## B. Single VM with HTTPS
 1. A small Linux VM with Docker, a domain whose A/AAAA record points to it, ports 80/443 open.

@@ -24,6 +24,13 @@ Spread across: ≥10 companies, at least 3 non-September/non-December fiscal yea
 Include deliberate traps: companies whose revenue concept differs (`Revenues` vs `RevenueFromContractWithCustomer…`), restated
 figures, a share-class company, a company with an amended filing.
 
+### Known scoring risk: period labels
+`score_numeric` requires `Answer.period` to equal `expected.period` after stripping spaces/hyphens/underscores and upper-casing. The
+tool schema only says "e.g. 'FY2023'", and in the first live recordings the model wrote `FY2024 (ended 2024-01-28)` for correct
+NVIDIA answers: that would be scored `wrong_period` although value and unit are right. Decide before the first scored run whether to
+tighten the prompt/tool description (new prompt sha) or normalise labels in the scorer (changes what the metric means), and record
+the choice in the write-up.
+
 ### Authoring protocol (this is where credibility is won or lost)
 1. **Gold comes from the source, by hand.** Open the filing/XBRL frame yourself, read the number, record `provenance`
    (`accession`, `xbrl_concept`, `retrieved_at`, `verified_by`). Do **not** take gold from an LLM, including this agent.
