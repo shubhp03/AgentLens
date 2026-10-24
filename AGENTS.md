@@ -48,7 +48,8 @@ AgentLens: a tool-using SEC-filings agent + evaluation/observability platform. R
 - VERIFIED LIVE (2026-10-23, manual): live Anthropic + live EDGAR via the real MCP tool servers (3-case unscored pilot, $0.17),
   and one question through Postgres 16 (`pgserver`) → agent → gateway → Angular dashboard in a browser (run list + trace detail
   render, no console errors). Not automated; no scored eval has been run.
-- NOT DONE / UNVERIFIED: Docker images never built (no daemon in the authoring sandbox); dashboard live only for runs/trace
+- DOCKER (2026-10-24, manual): images built and run in the sandbox (dockerd with vfs, host networking, base images via mirror.gcr.io): live question answered through containerized Postgres 16 + MCP over streamable-http + agent + gateway + dashboard image. Substitutions: uv binary from host (ghcr blocked), dashboard nginx stage built from host `ng build` output (npm failed in sandbox).
+- NOT DONE / UNVERIFIED: compose bridge networking and the CI `docker` job have never run; dashboard live only for runs/trace
   views (Evals pages checked once on a live gateway-mode run of 2 abstain cases). The direct-mode `agentlens-eval run` pilot
   command cannot score the all-draft seed dataset (scorer raises on empty gold; gateway mode refuses it up front).
 - Owner-only: EV-02 golden set (hand-verified against filings; 80 DRAFT candidates + worksheet prepared in `evals/datasets/golden_v1_*`, 0 verified), OPS-07 pricing, TL-04 live EDGAR check.

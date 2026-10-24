@@ -1,4 +1,5 @@
 # One image for all Python services; compose `command` selects the entrypoint.
+# Verified 2026-10-24: builds to ~276 MB; edgar-mcp/calc-mcp/uvicorn/agentlens-eval entrypoints present; streamable-http MCP works.
 # TODO(OPS-06): pin the uv image tag, commit uv.lock, build with --frozen.
 FROM python:3.12-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv

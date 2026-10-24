@@ -24,3 +24,51 @@ jobs:
       - uses: actions/setup-node@v4
         with: {node-version: "22", cache: npm, cache-dependency-path: dashboard/package-lock.json}
       - run: cd dashboard && npm ci && npm run test:ci && npm run build:demo
+
+  # OPS-01: build every image and bring the real compose stack up. No LLM key is set, so nothing here can spend money:
+  # the smoke checks cover health, the DB migration in a Postgres 16 container, the dashboard's runtime config + SPA
+  # fallback, and the agent reaching both MCP servers over streamable-http (the transport the stdio tests never touch).
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      COMPOSE_PROJECT_NAME: agentlens-ci
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare .env and pricing (public list prices; no secrets, no LLM key)
+        run: |
+          {
+            echo 'SEC_USER_AGENT=AgentLens CI ci@example.com'
+            echo "ADMIN_API_KEY=$(openssl rand -hex 32)"
+            echo 'POSTGRES_PASSWORD=ci-only-password'
+            echo 'DAILY_COST_CAP_USD=1'
+          } > .env
+          cp config/pricing.example.yaml config/pricing.yaml
+      - run: docker compose build
+      - run: docker compose up -d --wait --wait-timeout 240
+      - name: Smoke
+        run: |
+          set -euo pipefail
+          curl -fsS http://localhost:8080/healthz
+          curl -fsS http://localhost:4200/config.json
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:4200/runs)" = 200   # SPA fallback
+          docker compose exec -T agent python -c "import urllib.request as u; print(u.urlopen('http://localhost:8200/healthz', timeout=5).read().decode())"
+          docker compose exec -T agent python - <<'PY'
+          import asyncio, mcp
+          async def main() -> None:
+              async with mcp.Client("http://calc-mcp:8102/mcp") as c:
+                  r = await c.call_tool("calculate", {"expression": "6*7"})
+                  assert "42" in r.content[0].text, r
+              async with mcp.Client("http://edgar-mcp:8101/mcp") as c:
+                  names = {t.name for t in (await c.list_tools()).tools}
+                  assert {"resolve_company", "get_financial_facts", "get_filing_section"} <= names, names
+              print("agent -> MCP over streamable-http OK")
+          asyncio.run(main())
+          PY
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs --no-color --tail=200
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
+
